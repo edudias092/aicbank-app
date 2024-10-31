@@ -7,6 +7,7 @@ import { BankAccountDTO } from "../../types/bankaccount";
 import { BankAccountService } from "../../common/services/BankAccountService";
 import { ContaContext } from "../../contexts/ContaContextProvider";
 import { DayPicker } from "react-day-picker";
+import { CustomModal } from "../../common/components/CustomModal";
 
 export const FormDocumentos = () => {
 
@@ -17,6 +18,7 @@ export const FormDocumentos = () => {
     const bankAccountCtx = useContext(ContaContext);
     const [showCalendar, setShowCalendar] = useState(false);
     const [selectingDate, setSelectingDate] = useState(false);
+    const [showModal, setShowModal] = useState(true);
 
     const updateAccount = async (data: MandatoryDocumentsDTO) => {
         if(isValid){
@@ -216,5 +218,7 @@ export const FormDocumentos = () => {
                 </button>
             </div>
         </form>
+
+        {/* <CustomModal /> */}
     </div>
 }

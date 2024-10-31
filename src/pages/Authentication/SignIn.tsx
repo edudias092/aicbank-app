@@ -61,7 +61,7 @@ const SignIn = () => {
             <div className="py-17.5 px-26 text-center">
               <Link className="mb-5.5 inline-block" to="/">
                 {/* <img className="hidden dark:block" src={Logo} alt="Logo" /> */}
-                <img className="dark:hidden w-32" src={LogoDark} alt="Logo" />
+                <img className="dark:hidden w-64" src={LogoDark} alt="Logo" />
               </Link>
 
               <p className="2xl:px-20">

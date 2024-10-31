@@ -1,7 +1,8 @@
 export type BankAccountDTO = {
     id: number,
-    name: string,
     document: string,
+    name: string,
+    nameDisplay: string,
     phone: string,
     emailContact: string,
     logo: string,
@@ -10,7 +11,6 @@ export type BankAccountDTO = {
     galaxPayId: number,
     galaxId: string,
     galaxHash: string,
-    nameDisplay: string,
     responsibleDocument: string,
     typeCompany: string,
     cnae: string,

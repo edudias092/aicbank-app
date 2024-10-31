@@ -113,12 +113,6 @@ export const FormCadastro = () => {
                         <label className="mb-2.5 block text-black dark:text-white">
                             Celular / Telefone
                         </label>
-                        {/* <input
-                            type="text"
-                            {...register("phone", {required: true})}
-                            placeholder=""
-                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        /> */}
                         <IMaskInput 
                             mask="(00) 00000-0000"
                             value={watch("phone")}
