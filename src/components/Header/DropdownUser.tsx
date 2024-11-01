@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
 import { logout } from '../../common/utilities/authFunctions';
+import { ContaContext } from '../../contexts/ContaContextProvider';
 
-const DropdownUser = () => {
+export const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const bankAccountCtx = useContext(ContaContext);
   const navigate = useNavigate();
   const handleLogout = () => {
+    bankAccountCtx?.setBankAccount(undefined);
     logout();
     navigate("/")
   }
@@ -153,4 +156,3 @@ const DropdownUser = () => {
   );
 };
 
-export default DropdownUser;

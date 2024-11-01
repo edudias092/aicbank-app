@@ -5,7 +5,7 @@ import { BankAccountService } from "../../common/services/BankAccountService";
 import { professions } from "../../common/utilities/professions";
 import { states } from "../../common/utilities/states";
 import { ContaContext } from "../../contexts/ContaContextProvider";
-import { BankAccountDTO } from "../../types/bankaccount";
+import { BankAccountDTO, TypeBankAccount } from "../../types/bankaccount";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { ErrorAlert } from "../Alerts";
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../common/utilities/authFunctions";
@@ -27,6 +27,8 @@ export const FormCadastro = () => {
         if(isValid){
             setSendingToApi(s => s = true);
             let result: string[] | ResponseDTO<BankAccountDTO>;
+
+            data.type = parseInt(data.type.toString());
 
             if(!bankAccountCtx?.bankAccount)
                 result = await bankAccountService.createAccount(data);
@@ -82,10 +84,11 @@ export const FormCadastro = () => {
             </h3>
         </div>
         <form onSubmit={handleSubmit(updateAccount)}>
+            <input type="hidden" {...register("type")} defaultValue={TypeBankAccount.PJ} />
             <div className="p-6.5">
                 <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
-                        Nome
+                        Razão Social
                     </label>
                     <input
                         {...register("name", {required: true})}
@@ -93,14 +96,27 @@ export const FormCadastro = () => {
                         placeholder=""
                         className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
-                    {errors.name && <span className="text-red-500">Nome é obrigatório.</span>}
+                    {errors.name && <span className="text-red-500">Nome Fantasia é obrigatório.</span>}
                 </div>
+                <div className="mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                        Nome Fantasia
+                    </label>
+                    <input
+                        {...register("nameDisplay", {required: true})}
+                        type="text"
+                        placeholder=""
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                    {errors.name && <span className="text-red-500">Nome Fantasia é obrigatório.</span>}
+                </div>
+                
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
-                            Documento (CPF):
+                            Documento (CNPJ):
                         </label>
-                        <IMaskInput mask="000.000.000-00" 
+                        <IMaskInput mask="00.000.000/0000-00" 
                             value={watch("document")}
                             {...register('document', {required: true})} 
                             onAccept={(_, mask) => { setValue("document", mask.unmaskedValue)}}
@@ -109,6 +125,54 @@ export const FormCadastro = () => {
 
                         {errors.document && <span className="text-red-500">Documento é obrigatório.</span>}
                     </div>
+                    <div className="w-full xl:w-1/2">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            Documento do Responsável (CPF):
+                        </label>
+                        <IMaskInput mask="000.000.000-00" 
+                            value={watch("responsibleDocument")}
+                            {...register('responsibleDocument', {required: true})} 
+                            onAccept={(_, mask) => { setValue("responsibleDocument", mask.unmaskedValue)}}
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+
+                        {errors.document && <span className="text-red-500">Documento é obrigatório.</span>}
+                    </div>
+                </div>
+                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                    <div className="w-full xl:w-1/2">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            CNAE:
+                        </label>
+                        <input
+                            type="text"
+                            {...register("cnae", {required: true})}
+                            placeholder=""
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                        {errors.cnae && <span className="text-red-500">CNAE é obrigatório.</span>}
+                    </div>
+                    <div className="w-full xl:w-1/2">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            Tipo de empresa:
+                        </label>
+                        <select 
+                            { ...register("typeCompany", {required: true})}
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        >
+                            <option value="">-- Selecione --</option>
+                            <option value="ltda">LTDA</option>
+                            <option value="eireli">Eireli</option>
+                            <option value="association">Associações/Condomínios</option>
+                            <option value="individualEntrepreneur">Empresário individual</option>
+                            <option value="mei">MEI</option>
+                            <option value="sa">S/A</option>
+                            <option value="slu">SLU</option>
+                        </select>
+                        {errors.cnae && <span className="text-red-500">Tipo de empresa é obrigatório.</span>}
+                    </div>
+                </div>
+                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
                             Celular / Telefone
@@ -122,22 +186,22 @@ export const FormCadastro = () => {
                         />
                         {errors.phone && <span className="text-red-500">Telefone é obrigatório.</span>}
                     </div>
+                    <div className="w-full xl:w-1/2">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            Email <span className="text-meta-1">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            { ...register("emailContact", {required: true, pattern:/^[a-z0-9\.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/g})}
+                            placeholder=""
+                            readOnly
+                            value={email}
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                        {errors.emailContact && <span className="text-red-500">Email inválido.</span>}
+                    </div>
                 </div>
-                <div className="mb-4.5">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                        Email <span className="text-meta-1">*</span>
-                    </label>
-                    <input
-                        type="email"
-                        { ...register("emailContact", {required: true, pattern:/^[a-z0-9\.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/g})}
-                        placeholder=""
-                        readOnly
-                        value={email}
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                    {errors.emailContact && <span className="text-red-500">Email inválido.</span>}
 
-                </div>
                 {false && <>
                     <div className="mb-4.5">
                         <label className="mb-2.5 block text-black dark:text-white">
@@ -264,13 +328,14 @@ export const FormCadastro = () => {
                     </div>
                 </fieldset>
                 <hr className="text-slate-300 my-2"/>
-                <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                
+                {false && <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-1/2">
                         <label className="mb-2.5 block text-black dark:text-white">
                             Profissão:
                         </label>
                         <select 
-                            { ...register("Professional.internalName", {required: true})}
+                            { ...register("Professional.internalName", {required: false})}
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         >
                             <option value="">-- Selecione --</option>
@@ -285,14 +350,14 @@ export const FormCadastro = () => {
                         </label>
                         <input
                             type="text"
-                            { ...register("Professional.inscription", {required: true})}
+                            { ...register("Professional.inscription", {required: false})}
                             placeholder=""
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                         {errors.Professional?.inscription && <span className="text-red-500">Inscrição é obrigatório.</span>}
                         
                     </div>
-                </div>
+                </div>}
                 <div className="mb-6">
                     {apiError.length > 0 && 
                         <ErrorAlert message={apiError.join(',')} action={() => setApiError([])} />

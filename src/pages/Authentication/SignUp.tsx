@@ -38,8 +38,11 @@ const SignUp: React.FC = () => {
 
     if (!response.ok) {
       if (response.status === 400) {
-        let result = await response.text();
-        setError(result);
+        let result = await response.json();
+        let formattedResult = result as string[];
+
+        setError(formattedResult.join(","));
+        
         return;
       }
       if (response.status === 500) {

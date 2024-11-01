@@ -3,7 +3,7 @@ import { BankAccountDTO } from "../types/bankaccount"
 
 type ContaContextType = {
     bankAccount: BankAccountDTO | undefined,
-    setBankAccount: ((b: BankAccountDTO) => void )
+    setBankAccount: ((b: BankAccountDTO | undefined) => void )
 }
 
 type ContaContextProviderProps = {
@@ -13,7 +13,7 @@ type ContaContextProviderProps = {
 export const ContaContext = createContext<ContaContextType | null>(null);
 
 export const ContaContextProvider = ({ children }: ContaContextProviderProps) => {
-    const [bankAccount, setBankAccount] = useState<BankAccountDTO>();
+    const [bankAccount, setBankAccount] = useState<BankAccountDTO | undefined>();
     
     return <ContaContext.Provider value={{ bankAccount, setBankAccount }}>
         {children}

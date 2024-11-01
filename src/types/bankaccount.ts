@@ -12,11 +12,11 @@ export type BankAccountDTO = {
     galaxId: string,
     galaxHash: string,
     responsibleDocument: string,
-    typeCompany: string,
+    typeCompany: TypeCompany,
     cnae: string,
     status: StatusBankAccount,
     type: TypeBankAccount,
-    Professional: ProfessionalDTO,
+    Professional: ProfessionalDTO | null,
     accountuserId: number,
 }
 
@@ -48,5 +48,7 @@ export enum StatusBankAccount {
 
 export enum TypeBankAccount {
     PF = 1,
-    PJ
+    PJ = 2
 }
+
+export type TypeCompany = "ltda" | "eireli" | "association" | "individualEntrepreneur" | "mei" | "sa" | "slu";

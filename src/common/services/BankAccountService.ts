@@ -1,4 +1,6 @@
+import { BankStatementFilter } from "../../components/MinhaConta/Extrato";
 import { BankAccountDTO } from "../../types/bankaccount";
+import { BankStatement } from "../../types/bankStatement";
 import { MandatoryDocumentsDTO } from "../../types/mandatoryDocuments";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { getUserToken } from "../utilities/authFunctions";
@@ -79,7 +81,13 @@ export class BankAccountService {
         })
 
         return response.then(r => r.json()).catch(e => e);
-        
-        // return new Promise(() => []);
+    }
+
+    public getMovements(id: number, filter: BankStatementFilter) : Promise<ResponseDTO<BankStatement>>{
+        let response = fetch(`${baseUrl}/${id}/movements?initialDate=${filter.initialDate.toDateString()}&finalDate=${filter.finalDate.toDateString()}`, {
+            headers: this.defaultHeaders
+        });
+
+        return response.then(r => r.json());
     }
 }

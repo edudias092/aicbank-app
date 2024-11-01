@@ -10,6 +10,7 @@ import DefaultLayout from './layout/DefaultLayout';
 import { Resumo } from './components/MinhaConta/Resumo';
 import { ContaContextProvider } from './contexts/ContaContextProvider';
 import "react-day-picker/style.css";
+import { Extrato } from './components/MinhaConta/Extrato';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -36,13 +37,20 @@ function App() {
                 </>
               }
               />
-            <Route path="/" element={
-              <>
-                  <PageTitle title="Início | AIC Bank" />
-                  <ECommerce />
-                </>
-              }
-              />
+          <Route path="/" element={
+            <>
+                <PageTitle title="Início | AIC Bank" />
+                <ECommerce />
+              </>
+            }
+            />
+          <Route path="/extrato" element={
+            <>
+                <PageTitle title="Extrato | AIC Bank" />
+                <Extrato />
+              </>
+            }
+            />
         </Route>
         <Route element={<AuthLayout />}>
           <Route
