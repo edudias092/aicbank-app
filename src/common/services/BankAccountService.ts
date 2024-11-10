@@ -1,6 +1,8 @@
 import { BankStatementFilter } from "../../components/MinhaConta/Extrato";
+import { BankChargeFilter } from "../../components/MinhaConta/ListaCobrancas";
 import { BankAccountDTO } from "../../types/bankaccount";
 import { BankStatement } from "../../types/bankStatement";
+import { ChargeDTO } from "../../types/charge";
 import { MandatoryDocumentsDTO } from "../../types/mandatoryDocuments";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { getUserToken } from "../utilities/authFunctions";
@@ -85,6 +87,24 @@ export class BankAccountService {
 
     public getMovements(id: number, filter: BankStatementFilter) : Promise<ResponseDTO<BankStatement>>{
         let response = fetch(`${baseUrl}/${id}/movements?initialDate=${filter.initialDate.toDateString()}&finalDate=${filter.finalDate.toDateString()}`, {
+            headers: this.defaultHeaders
+        });
+
+        return response.then(r => r.json());
+    }
+
+    public createCharge(bankAccountId: number, chargeDTO: ChargeDTO) : Promise<ResponseDTO<ChargeDTO> | string | string[]>{
+        let response = fetch(`${baseUrl}/${bankAccountId}/charge`,{
+            method: "POST",
+            headers: this.defaultHeaders,
+            body: JSON.stringify(chargeDTO)
+        })
+
+        return response.then(r => r.json()).catch(e => e);
+    }
+
+    public getCharges(id: number, filter: BankChargeFilter) : Promise<ResponseDTO<ChargeDTO[]>>{
+        let response = fetch(`${baseUrl}/${id}/charges`, {
             headers: this.defaultHeaders
         });
 

@@ -11,6 +11,9 @@ import { Resumo } from './components/MinhaConta/Resumo';
 import { ContaContextProvider } from './contexts/ContaContextProvider';
 import "react-day-picker/style.css";
 import { Extrato } from './components/MinhaConta/Extrato';
+import { CobrancaBoleto } from './components/MinhaConta/CobrancaBoleto';
+import { DetalheCobranca } from './components/MinhaConta/DetalheCobranca';
+import { ListaCobranças } from './components/MinhaConta/ListaCobrancas';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -48,6 +51,27 @@ function App() {
             <>
                 <PageTitle title="Extrato | AIC Bank" />
                 <Extrato />
+              </>
+            }
+            />
+          <Route path="/cobrancas" element={
+            <>
+                <PageTitle title="Cobranças | AIC Bank" />
+                <ListaCobranças />
+              </>
+            }
+            />
+            <Route path="/cobrancas/nova-cobranca" element={
+            <>
+                <PageTitle title="Nova Cobrança | AIC Bank" />
+                <CobrancaBoleto />
+              </>
+            }
+            />
+            <Route path="/cobrancas/detalhe-cobranca/:id" element={
+            <>
+                <PageTitle title="Cobrança | AIC Bank" />
+                <DetalheCobranca />
               </>
             }
             />

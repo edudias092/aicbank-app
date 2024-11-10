@@ -6,42 +6,43 @@ import { useForm } from "react-hook-form";
 import { DayPicker } from "react-day-picker";
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../common/utilities/authFunctions";
 import { useNavigate } from "react-router-dom";
-import { TabelaExtrato } from "./TabelaExtrato";
-import { BalanceDTO } from "../../types/bankStatement";
+import { TabelaCobrancas } from "./TabelaCobrancas";
+import { ChargeDTO } from "../../types/charge";
 
-export type BankStatementFilter = {
+export type BankChargeFilter = {
     initialDate: Date,
     initialDateString: string,
     finalDate: Date,
     finalDateString: string
 }
 
-export const Extrato = () => {
+export const ListaCobranças = () => {
     const bankAccountService = new BankAccountService();
     const bankAccountCtx = useContext(ContaContext);
     
-    const { formState: {errors, isValid}, register, setValue, handleSubmit, watch  } = useForm<BankStatementFilter>();
+    const { formState: {errors, isValid}, register, setValue, handleSubmit, watch  } = useForm<BankChargeFilter>();
     
     const [selectingInitialDate, setSelectingInitialDate] = useState(false);
     const [selectingFinalDate, setSelectingFinalDate] = useState(false);
     const [sendingToApi, setSendingToApi] = useState(false);
-    const [balances, setBalances] = useState<BalanceDTO[]>();
+    const [charges, setCharges] = useState<ChargeDTO[]>();
     const [periodDescription, setPeriodDescription] = useState("");
     
     const navigate = useNavigate();
     const userId = getAccountUserId();
     const email = getAccountUserEmail() ?? '';
     
-    const getExtrato = async (data: BankStatementFilter) => {
+    const getExtrato = async (data: BankChargeFilter) => {
         if(bankAccountCtx?.bankAccount && isValid){
             setSendingToApi(s => s = true);
 
             try{
 
-                const result = await bankAccountService.getMovements(bankAccountCtx?.bankAccount?.id, data);
-
-                if(result.data?.balances && result.data.balances.length > 0){
-                    setBalances(result.data.balances);
+                const result = await bankAccountService.getCharges(bankAccountCtx?.bankAccount?.id, data);
+                
+                console.log(result.data);
+                if(result.data && result.data.length > 0){
+                    setCharges(result.data);
                 }
 
                 setPeriodDescription(`${data.initialDateString} - ${data.finalDateString}`)
@@ -82,6 +83,9 @@ export const Extrato = () => {
             bankAccountCtx.setBankAccount(response.data)
         }
     }
+    const addCobranca = () => {
+        navigate("nova-cobranca")
+    }
 
     useEffect(() => {
         getAccount(userId).then().catch(e => console.log(e));
@@ -91,12 +95,12 @@ export const Extrato = () => {
     },[])
 
     return <>
-        <Breadcrumb pageName="Extrato" />
+        <Breadcrumb pageName="Cobranças" />
 
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+            <div className="flex justify-between border-b border-stroke py-4 px-6.5 dark:border-strokedark">
                 <h3 className="font-medium text-black dark:text-white">
-                    Consulta Extrato
+                    Filtro
                 </h3>
             </div>
             <form onSubmit={handleSubmit(getExtrato)}>
@@ -160,16 +164,25 @@ export const Extrato = () => {
                             >
                                 {sendingToApi 
                                     ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>
-                                    : "Carregar"
+                                    : "Pesquisar"
                                 }
                             </button>
                         </div>
                     </div>
                 </div>
             </form>
+            
         </div>
+        
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mt-2">
-            <TabelaExtrato periodDescription={periodDescription} balances={balances}/>
+            <div className="flex justify-end p-4">
+                <button className="flex justify-center rounded bg-primary py-1 px-4 font-medium text-gray hover:bg-opacity-90"
+                    disabled={sendingToApi} onClick={addCobranca}
+                >
+                    Adicionar Cobrança
+                </button>
+            </div>
+            <TabelaCobrancas periodDescription={periodDescription} charges={charges}/>
         </div>
     </>
 }

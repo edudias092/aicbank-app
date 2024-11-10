@@ -58,7 +58,7 @@ export const TabelaExtrato = ({periodDescription, balances} : TabelaExtratoProps
             <p className="text-sm text-black dark:text-white">{balance.groupPaymentType}</p>
           </div>
           <div className="col-span-1 flex items-center">
-            <p className="text-sm text-meta-3">${balance.paymentType}</p>
+            <p className="text-sm text-meta-3">{balance.paymentType}</p>
           </div>
         </div>
       ))}

@@ -212,6 +212,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Conta --> */}
 
               {/* <!-- Menu Item Empréstimo --> */}
+              
+              <li>
+                <NavLink
+                  to="/cobrancas"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('boleto') &&
+                    'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  <ConfigIcon />
+                  Cobranças
+                </NavLink>
+              </li>
+              {/* <!-- Menu Item Empréstimo --> */}
+
               <li>
                 <NavLink
                   to="/emprestimo"
@@ -223,10 +238,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Empréstimo
                 </NavLink>
               </li>
-              {/* <!-- Menu Item Empréstimo --> */}
-
               {/* <!-- Menu Item Pix --> */}
-              <li>
+              {/* <li>
                 <NavLink
                   to="/pix"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
@@ -237,22 +250,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <ConfigIcon />
                   Pix
                 </NavLink>
-              </li>
+              </li> */}
               {/* <!-- Menu Item Pix --> */}
 
               {/* <!-- Menu Item Boleto --> */}
-              <li>
-                <NavLink
-                  to="/pix"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('boleto') &&
-                    'bg-graydark dark:bg-meta-4'
-                  }`}
-                >
-                  <ConfigIcon />
-                  Boleto
-                </NavLink>
-              </li>
+              
               {/* <!-- Menu Item Pix --> */}
             </ul>
           </div>
@@ -302,7 +304,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </svg>
                       </NavLink>
                       {/* <!-- Dropdown Menu Start --> */}
-                      <div
+                      {/* <div
                         className={`translate transform overflow-hidden ${
                           !open && 'hidden'
                         }`}
@@ -331,7 +333,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             </NavLink>
                           </li>
                         </ul>
-                      </div>
+                      </div> */}
                       {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
                   );
