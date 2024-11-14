@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 interface BreadcrumbProps {
   pageName: string;
-  parent?: string
+  parent?: string;
+  parentRoute?: string;
 }
-const Breadcrumb = ({ pageName, parent = "Dashboard" }: BreadcrumbProps) => {
+const Breadcrumb = ({ pageName, parent = "Dashboard", parentRoute = "/" }: BreadcrumbProps) => {
   return (
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <h2 className="text-title-md2 font-semibold text-black dark:text-white">
@@ -13,7 +14,7 @@ const Breadcrumb = ({ pageName, parent = "Dashboard" }: BreadcrumbProps) => {
       <nav>
         <ol className="flex items-center gap-2">
           <li>
-            <Link className="font-medium" to="/">
+            <Link className="font-medium" to={parentRoute}>
               {parent} /
             </Link>
           </li>

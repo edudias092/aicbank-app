@@ -1,5 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import { ChargeDTO, PaymentMethods } from '../../types/charge';
-import { BiFile, BiXCircle } from "react-icons/bi";
+import { BiFile, BiXCircle, BiPlusCircle } from "react-icons/bi";
 
 export type TabelaCobrancasProps = {
   periodDescription: string,
@@ -7,7 +8,8 @@ export type TabelaCobrancasProps = {
 }
 
 export const TabelaCobrancas = ({periodDescription, charges} : TabelaCobrancasProps) => {
-  
+  const navigate = useNavigate();
+
   const getPaymentMethodDescription = (paymentMethod: PaymentMethods) => {
     switch(paymentMethod){
       case 'creditcard':
@@ -35,7 +37,7 @@ export const TabelaCobrancas = ({periodDescription, charges} : TabelaCobrancasPr
   const getPayDay = (charge: ChargeDTO) => { 
     if(charge.Transactions && charge.Transactions.length > 0){
       var transaction = charge.Transactions[charge.Transactions.length - 1];
-      console.log(transaction)
+      
       return new Date(transaction.payDay).toLocaleDateString();
     }
 
@@ -52,73 +54,78 @@ export const TabelaCobrancas = ({periodDescription, charges} : TabelaCobrancasPr
     }
   }
 
+  const goToDetalhes = (id: string) => {
+    if(id.trim() != ""){
+      navigate(`/cobrancas/detalhe-cobranca/${id}`)
+    }
+  }
+
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="grid grid-cols-8 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-10 md:px-6 2xl:px-7.5">
-        <div className="col-span-2 flex items-center">
-          <p className="font-medium">Nome</p>
-        </div>
-        <div className="col-span-1 hidden items-center sm:flex">
-          <p className="font-medium">Valor</p>
-        </div>
-        <div className="col-span-2 flex items-center">
-          <p className="font-medium">Descrição</p>
-        </div>
-        <div className="col-span-2 flex items-center">
-          <p className="font-medium">Vencimento</p>
-        </div>
-        <div className="col-span-2 flex items-center">
-          <p className="font-medium">Forma de Pagamento</p>
-        </div>
-        <div className="col-span-1 flex items-center">
-          <p className="font-medium">Ações</p>
-        </div>
-      </div>
-
-      {(charges && charges?.length > 0) ? charges?.map((charge, key) => (
-        <div
-          className="grid grid-cols-8 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-10 md:px-6 2xl:px-7.5"
-          key={key}
-        >
-          <div className="col-span-2 flex items-center">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <p className="text-sm text-black dark:text-white">
-                {charge.Customer?.name}
-              </p>
-            </div>
-          </div>
-          <div className="col-span-1 hidden items-center sm:flex">
-            <p className="text-sm text-black dark:text-white">
-              { getActualValue(charge.value)}
-            </p>
-          </div>
-          <div className="col-span-2 flex items-center">
-            <p className="text-sm text-black dark:text-white">
-              {charge.additionalInfo ? charge.additionalInfo : "-"}
-            </p>
-          </div>
-          <div className="col-span-2 flex items-center">
-            <p className="text-sm text-black dark:text-white">{getPayDay(charge)}</p>
-          </div>
-          <div className="col-span-2 flex items-center">
-            <p className="">{getPaymentMethodDescription(charge.mainPaymentMethodId)}</p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="flex">
-              <button type='button' onClick={() => viewFatura(key)}>
-                <BiFile title='Visualizar Fatura' className='cursor-pointer border-2 rounded-md mx-1' size={30}/>
-              </button>
-              <BiXCircle title='Cancelar Cobrança' className='cursor-pointer text-danger border-2 rounded-md mx-1' size={30}/>
-            </p>
-          </div>
-        </div>
-      )):
-      <div className="w-full">
-          <p className="text-lg dark:text-white text-center py-6 border-t-2 border-b-2 border-slate-100">
-            Nenhuma cobrança encontrada
-          </p>
-      </div>
-      }
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" className="px-6 py-3">
+                  Nome
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Valor
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Descrição
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Vencimento
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Forma de Pagamento
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Ações
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+          {(charges && charges?.length > 0) ? charges?.map((charge, key) => (
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {charge.Customer?.name}
+                </th>
+                <td className="px-6 py-4">
+                  {getActualValue(charge.value)}
+                </td>
+                <td className="px-6 py-4">
+                  {charge.additionalInfo ? charge.additionalInfo : "-"}
+                </td>
+                <td className="px-6 py-4">
+                  {getPayDay(charge)}
+                </td>
+                <td className="px-6 py-4">
+                  {getPaymentMethodDescription(charge.mainPaymentMethodId)}
+                </td>
+                <td className="px-6 py-4">
+                <p className="flex">
+                  <button type='button' onClick={() => goToDetalhes(charge.myId)}>
+                    <BiPlusCircle title='Ver Detalhes' className='cursor-pointer border-2 rounded-md mx-1' size={30}/>
+                  </button>
+                  <button type='button' onClick={() => viewFatura(key)}>
+                    <BiFile title='Visualizar Fatura' className='cursor-pointer border-2 rounded-md mx-1' size={30}/>
+                  </button>
+                  <button type='button'>
+                    <BiXCircle title='Cancelar Cobrança' className='cursor-pointer text-danger border-2 rounded-md mx-1' size={30}/>
+                  </button>
+                </p>
+                </td>
+            </tr>
+          )):
+          <tr className="bg-white text-center text-lg border-t border-slate-100">
+              <td className="py-4" colSpan={6}>
+                Nenhuma cobrança encontrada
+              </td>
+          </tr>
+          }
+        </tbody>
+    </table>
     </div>
   );
 };

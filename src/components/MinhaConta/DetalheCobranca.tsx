@@ -5,6 +5,9 @@ import { ContaContext } from "../../contexts/ContaContextProvider";
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../common/utilities/authFunctions";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorAlert } from "../Alerts";
+import { ChargeDTO } from "../../types/charge";
+import { ResponseDTO } from "../../types/ResponseDTO";
+import { CustomerDTO } from "../../types/customer";
 
 export const DetalheCobranca = () => {
 
@@ -12,31 +15,36 @@ export const DetalheCobranca = () => {
     const bankAccountCtx = useContext(ContaContext);
     const [sendingToApi, setSendingToApi] = useState(false);
     const [error, setError] = useState<string>();
+    const [charge, setCharge] = useState<ChargeDTO>();
 
     const navigate = useNavigate();
-    const { id } = useParams();
 
     const userId = getAccountUserId();
     const email = getAccountUserEmail() ?? '';
+    const { id } = useParams();
+
+    const getCharge = async (chargeId: string) => {
+        if(bankAccountCtx?.bankAccount){
+            setSendingToApi(s => s = true);
+            setError(e => e = undefined);
+            try{
+                const result = await bankAccountService.getChargeById(bankAccountCtx?.bankAccount?.id, chargeId);
     
-    const getCharge = async (chargeId: number) => {
-        
-        setSendingToApi(s => s = true);
-        setError(e => e = undefined);
-        try{
-            // const result = await bankAccountService.createCharge(bankAccountCtx?.bankAccount?.id, data);
-
-            // const response = result as ResponseDTO<ChargeDTO>
-        
-            // if(response.errors && response.errors.length > 0){
-            //     setError(response.errors.join(','))
-            // }
+                const response = result as ResponseDTO<ChargeDTO>;
+            
+                if(response.errors && response.errors.length > 0){
+                    setError(response.errors.join(','))
+                }
+                else{
+                    setCharge(response.data);
+                }
+            }
+            catch(e) {
+                console.log(e);
+            }
+    
+            setSendingToApi(s => s = false);
         }
-        catch(e) {
-            console.log(e);
-        }
-
-        setSendingToApi(s => s = false);
         
     }
 
@@ -55,11 +63,78 @@ export const DetalheCobranca = () => {
     }
 
     useEffect(() => {
-        getAccount(userId).then().catch(e => console.log(e));
-    },[])
+        getAccount(userId)
+            .then(() => {
+                if(id){
+                    getCharge(id).then().catch(e => console.log(e));
+                }
+                else
+                    navigate("/cobrancas")
+            })
+            .catch(e => console.log(e));
+
+    },[bankAccountCtx])
+
+    const getPayDay = (charge: ChargeDTO | undefined) => { 
+        if(charge?.Transactions && charge?.Transactions?.length > 0){
+            var transaction = charge.Transactions[charge.Transactions.length - 1];
+          
+            return new Date(transaction.payDay).toLocaleDateString();
+        }
+    
+        return "-";
+    }
+
+    const getActualValue = (value: number | null | undefined) => {
+        if(value){
+          var actualValue = value / 100;
+    
+          return "R$ " + actualValue.toFixed(2).toLocaleString();
+        }
+    
+        return "-";
+    }
+
+    const viewFatura = () => {
+
+        if(charge){
+            window.open(charge.paymentLink, "_blank")
+        }
+    }
+
+    const viewBoleto = () => {
+        if(charge && charge.Transactions){
+            const transaction = charge.Transactions[charge.Transactions.length - 1];
+            console.log(transaction);
+            if(transaction)
+                window.open(transaction.Boleto.pdf, "_blank")
+        }
+    }
+
+    const getEmail = (customer: CustomerDTO | undefined | null) => {
+        if(customer && customer.emails && customer.emails.length > 0){
+            const email = customer.emails[0];
+
+            if(email != null && email.trim() != "")
+                return email;
+        }
+
+        return "-";
+    }
+
+    const getPhone = (customer: CustomerDTO | undefined | null) => {
+        if(customer && customer.phones && customer.phones.length > 0){
+            const phone = customer.phones[0];
+
+            if(phone != null)
+                return phone;
+        }
+
+        return "-";
+    }
 
     return <>
-        <Breadcrumb pageName={`Detalhe Cobrança`} parent="Cobranças" />
+        <Breadcrumb pageName={`Detalhe Cobrança`} parent="Cobranças" parentRoute="/cobrancas" />
 
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
@@ -74,7 +149,7 @@ export const DetalheCobranca = () => {
                             <label className="mb-2.5 block text-black dark:text-white">
                                 Data de Vencimento <span className="text-meta-1">*</span>:
                             </label>
-                            <input type="number" step="0.01" min="0" disabled 
+                            <input type="text" disabled value={getPayDay(charge)}
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             />
                         </div>
@@ -84,7 +159,7 @@ export const DetalheCobranca = () => {
                             Valor <span className="text-meta-1">*</span>:
                         </label>
 
-                        <input type="number" step="0.01" min="0" disabled
+                        <input type="text" disabled value={getActualValue(charge?.value)}
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                     </div>
@@ -111,6 +186,7 @@ export const DetalheCobranca = () => {
                                 Nome <span className="text-meta-1">*</span>:
                             </label>
                             <input
+                                value={charge?.Customer.name}
                                 type="text"
                                 placeholder=""
                                 disabled
@@ -122,6 +198,7 @@ export const DetalheCobranca = () => {
                                 Documento (CPF/CNPJ) <span className="text-meta-1">*</span>:
                             </label>
                             <input
+                                value={charge?.Customer.document}
                                 type="text"
                                 placeholder=""
                                 disabled
@@ -136,6 +213,7 @@ export const DetalheCobranca = () => {
                                 Email <span className="text-meta-1">*</span>
                             </label>
                             <input
+                                value={getEmail(charge?.Customer)}
                                 type="text"
                                 placeholder=""
                                 disabled
@@ -147,6 +225,7 @@ export const DetalheCobranca = () => {
                                 Telefone/Celular
                             </label>
                             <input
+                                value={getPhone(charge?.Customer)}
                                 type="text"
                                 placeholder=""
                                 disabled
@@ -160,7 +239,7 @@ export const DetalheCobranca = () => {
                 <div className="mb-4 5">
                     <div className="flex items-center">
                         <button className="flex w-1/3 justify-center rounded bg-primary p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
-                            disabled={sendingToApi}    
+                            disabled={sendingToApi} onClick={() => viewBoleto()}
                         >
                             {sendingToApi 
                                 ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>
@@ -168,7 +247,7 @@ export const DetalheCobranca = () => {
                             }
                         </button>
                         <button className="w-1/3 justify-center rounded bg-primary p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
-                            disabled={sendingToApi}    
+                            disabled={sendingToApi} onClick={() => viewFatura()}
                         >
                             {sendingToApi 
                                 ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>
@@ -176,7 +255,7 @@ export const DetalheCobranca = () => {
                             }
                         </button>
                         <button className="w-1/3 justify-center rounded bg-danger p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
-                            disabled={sendingToApi}    
+                            disabled={sendingToApi} 
                         >
                             {sendingToApi 
                                 ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>

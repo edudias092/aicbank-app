@@ -8,60 +8,61 @@ export type TabelaExtratoProps = {
 export const TabelaExtrato = ({periodDescription, balances} : TabelaExtratoProps) => {
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="py-6 px-4 md:px-6 xl:px-7.5">
-        <h4 className="text-xl font-semibold text-black dark:text-white">
-          Extrato Período { periodDescription.length ? ` - ${periodDescription}` : ""}
+      
+      <div className="py-2 px-2 md:px-6 xl:px-7.5">
+        <h4 className="text-lg font-semibold text-black dark:text-white">
+         { periodDescription.length > 0 ? `Período - ${periodDescription}` : ""}
         </h4>
       </div>
 
-      <div className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
-        <div className="col-span-3 flex items-center">
-          <p className="font-medium">Data</p>
-        </div>
-        <div className="col-span-2 hidden items-center sm:flex">
-          <p className="font-medium">Descrição</p>
-        </div>
-        <div className="col-span-1 flex items-center">
-          <p className="font-medium">Valor</p>
-        </div>
-        <div className="col-span-1 flex items-center">
-          <p className="font-medium">Grupo Movimentação</p>
-        </div>
-        <div className="col-span-1 flex items-center">
-          <p className="font-medium">Tipo Movimentação</p>
-        </div>
-      </div>
-
-      {balances?.map((balance, key) => (
-        <div
-          className="grid grid-cols-6 border-t border-stroke py-4.5 px-4 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5"
-          key={key}
-        >
-          <div className="col-span-3 flex items-center">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <p className="text-sm text-black dark:text-white">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" className="px-6 py-3">
+                  Data
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Descrição
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Valor
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Grupo Movimentação
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Tipo Movimentação
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+          {balances && balances.length > 0 ? balances?.map((balance, key) => (
+            <tr key={key}>
+              <td className="px-6 py-4">
                 {balance.createdAt.toLocaleString()}
-              </p>
-            </div>
-          </div>
-          <div className="col-span-2 hidden items-center sm:flex">
-            <p className="text-sm text-black dark:text-white">
-              {balance.friendlyDescription}
-            </p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="text-sm text-black dark:text-white">
-              R$ {balance.value.toFixed(2)}
-            </p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="text-sm text-black dark:text-white">{balance.groupPaymentType}</p>
-          </div>
-          <div className="col-span-1 flex items-center">
-            <p className="text-sm text-meta-3">{balance.paymentType}</p>
-          </div>
-        </div>
-      ))}
+              </td>
+              <td className="px-6 py-4">
+                {balance.friendlyDescription}
+              </td>
+              <td className="px-6 py-4">
+                R$ {balance.value.toFixed(2)}
+              </td>
+              <td className="px-6 py-4">
+                {balance.groupPaymentType}
+              </td>
+              <td className="px-6 py-4">
+                {balance.paymentType}
+              </td>
+            </tr>
+          )):
+            <tr className="bg-white text-center text-lg border-t border-slate-100">
+                <td className="py-4" colSpan={6}>
+                  Nenhum registro encontrado
+                </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
   );
 };

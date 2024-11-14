@@ -4,7 +4,7 @@ export type TransactionDTO = {
     payDay: Date;
     statusDate: Date;
     status: string;
-    boleto: BoletoDTO;
+    Boleto: BoletoDTO;
     pix: PixDTO;
 };
   

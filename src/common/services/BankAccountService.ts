@@ -6,6 +6,7 @@ import { ChargeDTO } from "../../types/charge";
 import { MandatoryDocumentsDTO } from "../../types/mandatoryDocuments";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { getUserToken } from "../utilities/authFunctions";
+import { buildQueryParams } from "../utilities/helpers";
 const baseUrl: string = "http://localhost:5164/api/bankaccount";
 
 export class BankAccountService {
@@ -103,8 +104,27 @@ export class BankAccountService {
         return response.then(r => r.json()).catch(e => e);
     }
 
-    public getCharges(id: number, filter: BankChargeFilter) : Promise<ResponseDTO<ChargeDTO[]>>{
-        let response = fetch(`${baseUrl}/${id}/charges`, {
+    public getCharges(id: number, filter: BankChargeFilter | null = null) : Promise<ResponseDTO<ChargeDTO[]>>{
+        let query = "";
+        if(filter){
+            var queryParams = new URLSearchParams();
+
+            queryParams.append("initialDate", filter?.initialDate.toDateString())
+            queryParams.append("finalDate", filter?.finalDate.toDateString())
+
+            query = "?"+queryParams.toString();
+        }
+        
+        const uri = `${baseUrl}/${id}/charges${query}`;
+        let response = fetch(`${uri}`, {
+            headers: this.defaultHeaders
+        });
+
+        return response.then(r => r.json());
+    }
+
+    public getChargeById(id: number, chargeId: string) : Promise<ResponseDTO<ChargeDTO>>{
+        let response = fetch(`${baseUrl}/${id}/charges/${chargeId}`, {
             headers: this.defaultHeaders
         });
 

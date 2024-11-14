@@ -22,7 +22,6 @@ export const CobrancaBoleto = () => {
     const [sendingToApi, setSendingToApi] = useState(false);
     const [error, setError] = useState<string>();
 
-    const moneyMask = /([0-9])/;
     const navigate = useNavigate();
     const userId = getAccountUserId();
     const email = getAccountUserEmail() ?? '';
@@ -34,13 +33,18 @@ export const CobrancaBoleto = () => {
             try{
                 data.mainPaymentMethodId = "boleto";
                 data.valueInDouble = parseFloat(data.valueInDouble.toString());
-                
+                data.Customer.emails = [data.Customer.email];
+                data.Customer.phones = [data.Customer.phone];
                 const result = await bankAccountService.createCharge(bankAccountCtx?.bankAccount?.id, data);
 
-                const response = result as ResponseDTO<ChargeDTO>
+                const response = result as ResponseDTO<ChargeDTO>;
             
                 if(response.errors && response.errors.length > 0){
-                    setError(response.errors.join(','))
+                    setError(response.errors.join(','));
+                }
+                else{
+                    navigate(`/cobrancas/detalhe-cobranca/${response.data.myId}`);
+                    return;
                 }
             }
             catch(e) {
@@ -51,7 +55,7 @@ export const CobrancaBoleto = () => {
         }
     }
 
-    const [mask, setMask] = useState(['000.000.000-00', '00.000.000/0000-00']);
+    const [mask, _] = useState(['000.000.000-00', '00.000.000/0000-00']);
 
     const selectPayday = (d: Date | undefined) => {
         const newDate = d ?? new Date();
@@ -81,7 +85,7 @@ export const CobrancaBoleto = () => {
     },[])
 
     return <>
-        <Breadcrumb pageName="Nova Cobrança - Boleto" />
+        <Breadcrumb pageName="Nova Cobrança - Boleto" parent="Cobranças" parentRoute="/cobrancas" />
 
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
@@ -122,11 +126,6 @@ export const CobrancaBoleto = () => {
                             <label className="mb-2.5 block text-black dark:text-white">
                                 Valor <span className="text-meta-1">*</span>:
                             </label>
-                            {/* <IMaskInput mask={/^(?!0\,00)(?=.*[1-9])\d{1,3}(\.\d{3})*,\d{2}$/}
-                                onAccept={(v, m) => setValue("value", parseFloat(m.unmaskedValue.replace(/\./g, '').replace(',', '.')))}
-                                {...register('value', {required: true})} 
-                                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                            /> */}
 
                             <input type="number" step="0.01" min="0"
                                 {...register('valueInDouble', {required: true})} 
@@ -198,9 +197,9 @@ export const CobrancaBoleto = () => {
                                     Telefone/Celular
                                 </label>
                                 <IMaskInput mask="(00)00000-0000" 
-                                    value={watch("Customer.phone")}
+                                    value={watch("Customer.phone")?.toString()}
                                     {...register('Customer.phone')} 
-                                    onAccept={(_, mask) => { setValue("Customer.phone", mask.unmaskedValue)}}
+                                    onAccept={(_, mask) => { setValue("Customer.phone", parseInt(mask.unmaskedValue))}}
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                                 {errors.Customer?.email && <span className="text-red-500">Telefone/Celular inválido.</span>}

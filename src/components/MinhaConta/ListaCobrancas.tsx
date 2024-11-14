@@ -32,20 +32,19 @@ export const ListaCobranças = () => {
     const userId = getAccountUserId();
     const email = getAccountUserEmail() ?? '';
     
-    const getExtrato = async (data: BankChargeFilter) => {
-        if(bankAccountCtx?.bankAccount && isValid){
+    const getCobrancas = async (data: BankChargeFilter | null = null) => {
+        if(bankAccountCtx?.bankAccount && (data === null || isValid)){
             setSendingToApi(s => s = true);
-
+            
             try{
 
                 const result = await bankAccountService.getCharges(bankAccountCtx?.bankAccount?.id, data);
                 
-                console.log(result.data);
                 if(result.data && result.data.length > 0){
                     setCharges(result.data);
                 }
 
-                setPeriodDescription(`${data.initialDateString} - ${data.finalDateString}`)
+                setPeriodDescription(`${data?.initialDateString} - ${data?.finalDateString}`)
             }
             catch(e) {
                 console.log(e);
@@ -92,7 +91,9 @@ export const ListaCobranças = () => {
 
         setValue("initialDate", new Date())
         setValue("finalDate", new Date())
-    },[])
+
+        getCobrancas(null).then().catch(e => console.log(e));
+    },[bankAccountCtx?.bankAccount])
 
     return <>
         <Breadcrumb pageName="Cobranças" />
@@ -103,7 +104,7 @@ export const ListaCobranças = () => {
                     Filtro
                 </h3>
             </div>
-            <form onSubmit={handleSubmit(getExtrato)}>
+            <form onSubmit={handleSubmit(getCobrancas)}>
                 <div className="p-6.5">
                     <div className="mb-4.5 flex flex-col gap-6 xl:flex-row items-end">
                         <div className="w-full xl:w-1/4 flex-1">
