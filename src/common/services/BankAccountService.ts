@@ -2,6 +2,7 @@ import { BankStatementFilter } from "../../components/MinhaConta/Extrato";
 import { BankChargeFilter } from "../../components/MinhaConta/ListaCobrancas";
 import { BankAccountDTO } from "../../types/bankaccount";
 import { BankStatement } from "../../types/bankStatement";
+import { CelcashPaymentRequestDto } from "../../types/celcashPaymentRequestDto";
 import { ChargeDTO } from "../../types/charge";
 import { MandatoryDocumentsDTO } from "../../types/mandatoryDocuments";
 import { ResponseDTO } from "../../types/ResponseDTO";
@@ -146,5 +147,15 @@ export class BankAccountService {
         });
 
         return response.then(r => r.json());
+    }
+
+    public createPayment(bankAccountId: number, paymentRequest: CelcashPaymentRequestDto) : Promise<ResponseDTO<object> | string | string[]>{
+        let response = fetch(`${baseUrl}/${bankAccountId}/payment`,{
+            method: "POST",
+            headers: this.defaultHeaders,
+            body: JSON.stringify(paymentRequest)
+        })
+
+        return response.then(r => r.json()).catch(e => e);
     }
 }

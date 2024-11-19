@@ -14,6 +14,7 @@ import { Extrato } from './components/MinhaConta/Extrato';
 import { CobrancaBoleto } from './components/MinhaConta/CobrancaBoleto';
 import { DetalheCobranca } from './components/MinhaConta/DetalheCobranca';
 import { ListaCobranças } from './components/MinhaConta/ListaCobrancas';
+import { NovaTransferencia } from './components/MinhaConta/NovaTransferencia';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -72,6 +73,13 @@ function App() {
             <>
                 <PageTitle title="Cobrança | AIC Bank" />
                 <DetalheCobranca />
+              </>
+            }
+            />
+            <Route path="/pix" element={
+            <>
+                <PageTitle title="Nova Transferência / Pix | AIC Bank" />
+                <NovaTransferencia />
               </>
             }
             />

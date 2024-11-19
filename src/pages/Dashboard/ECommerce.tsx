@@ -8,6 +8,7 @@ import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from '../../com
 import { BiCalendarPlus, BiCheckSquare, BiRefresh } from 'react-icons/bi';
 import { BankAccountService } from '../../common/services/BankAccountService';
 import { ContaContext } from '../../contexts/ContaContextProvider';
+import Loader from '../../common/Loader';
 
 const ECommerce: React.FC = () => {
   const bankAccountService = new BankAccountService();
@@ -68,6 +69,7 @@ const ECommerce: React.FC = () => {
 
   return (
     <>
+      {sendingToApi && <Loader />}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Saldo disponível da conta" total={balance?.enabled ? "R$ "+balance?.enabled.toLocaleString() : "R$ 0,00"} >
           <BiCheckSquare className='text-2xl text-success' />
