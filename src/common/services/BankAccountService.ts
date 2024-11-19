@@ -130,4 +130,21 @@ export class BankAccountService {
 
         return response.then(r => r.json());
     }
+
+    public cancelCharge(bankAccountDTO: BankAccountDTO, chargeId: string) : Promise<ResponseDTO<boolean> | string[]>{
+        let response = fetch(`${baseUrl}/${bankAccountDTO.id}/charges/${chargeId}`,{
+            method: "DELETE",
+            headers: this.defaultHeaders
+        })
+
+        return response.then(r => r.json()).catch(e => e);
+    }
+
+    public getBalance(id: number) : Promise<ResponseDTO<CelcashBalanceResponseDto>>{
+        let response = fetch(`${baseUrl}/${id}/balance`, {
+            headers: this.defaultHeaders
+        });
+
+        return response.then(r => r.json());
+    }
 }

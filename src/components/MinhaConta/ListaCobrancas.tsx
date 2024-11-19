@@ -7,7 +7,8 @@ import { DayPicker } from "react-day-picker";
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../common/utilities/authFunctions";
 import { useNavigate } from "react-router-dom";
 import { TabelaCobrancas } from "./TabelaCobrancas";
-import { ChargeDTO } from "../../types/charge";
+import { ChargeDTO, getActualValue, getPayDay } from "../../types/charge";
+import { CustomModal } from "../../common/components/CustomModal";
 
 export type BankChargeFilter = {
     initialDate: Date,
@@ -27,6 +28,8 @@ export const ListaCobranças = () => {
     const [sendingToApi, setSendingToApi] = useState(false);
     const [charges, setCharges] = useState<ChargeDTO[]>();
     const [periodDescription, setPeriodDescription] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [cancelCharge, setCancelCharge] = useState<ChargeDTO>();
     
     const navigate = useNavigate();
     const userId = getAccountUserId();
@@ -40,7 +43,7 @@ export const ListaCobranças = () => {
 
                 const result = await bankAccountService.getCharges(bankAccountCtx?.bankAccount?.id, data);
                 
-                if(result.data && result.data.length > 0){
+                if(result.data){
                     setCharges(result.data);
                 }
 
@@ -82,6 +85,7 @@ export const ListaCobranças = () => {
             bankAccountCtx.setBankAccount(response.data)
         }
     }
+
     const addCobranca = () => {
         navigate("nova-cobranca")
     }
@@ -94,6 +98,37 @@ export const ListaCobranças = () => {
 
         getCobrancas(null).then().catch(e => console.log(e));
     },[bankAccountCtx?.bankAccount])
+
+    const showCancelDialog = (id: string) => {
+        const selectedCharge = charges?.find(c => c.myId == id);
+
+        if(selectedCharge){
+            setCancelCharge(selectedCharge);
+            setShowModal(true);
+        }
+    }
+    
+    const confirmCancelCharge = async () => {
+        if(bankAccountCtx?.bankAccount && cancelCharge){
+            setSendingToApi(s => s = true);
+            
+            try{
+
+                const result = await bankAccountService.cancelCharge(bankAccountCtx?.bankAccount, cancelCharge.myId);
+                
+                if(result){
+                    setCharges(charges?.filter(c => c.myId !== cancelCharge.myId));
+                    setCancelCharge(undefined);
+                    setShowModal(false);
+                }
+            }
+            catch(e) {
+                console.log(e);
+            }
+
+            setSendingToApi(s => s = false);
+        }
+    }
 
     return <>
         <Breadcrumb pageName="Cobranças" />
@@ -183,7 +218,16 @@ export const ListaCobranças = () => {
                     Adicionar Cobrança
                 </button>
             </div>
-            <TabelaCobrancas periodDescription={periodDescription} charges={charges}/>
+            <TabelaCobrancas periodDescription={periodDescription} charges={charges} selectCancelCharge={showCancelDialog} />
+            {showModal && 
+            <CustomModal title="Cancelar Cobrança" onRequestClose={() => setShowModal(false)} onConfirm={confirmCancelCharge}>
+                <p className="text-xl mt-6">Confirma o cancelamento da cobrança?</p>
+                <div className="mt-1">
+                    <b>Nome:</b> {cancelCharge?.Customer.name}<br/>
+                    <b>Valor:</b> {getActualValue(cancelCharge?.value)}<br/>
+                    <b>Data de Vencimento:</b> {getPayDay(cancelCharge)}
+                </div>
+            </CustomModal>}
         </div>
     </>
 }
