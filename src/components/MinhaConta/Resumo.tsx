@@ -51,6 +51,9 @@ export const Resumo = () => {
             {bankAccountCtx?.bankAccount != undefined && bankAccountCtx?.bankAccount?.status == StatusBankAccount.PendingAnalysis &&
                 <FormAnalise />
             }
+            {bankAccountCtx?.bankAccount != undefined && bankAccountCtx?.bankAccount?.status == StatusBankAccount.Activated &&
+                <FormCadastro readonly />
+            }
         </div>
     </>
 }

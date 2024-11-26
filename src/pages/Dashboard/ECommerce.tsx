@@ -9,6 +9,7 @@ import { BiCalendarPlus, BiCheckSquare, BiRefresh } from 'react-icons/bi';
 import { BankAccountService } from '../../common/services/BankAccountService';
 import { ContaContext } from '../../contexts/ContaContextProvider';
 import Loader from '../../common/Loader';
+import { StatusBankAccount } from '../../types/bankaccount';
 
 const ECommerce: React.FC = () => {
   const bankAccountService = new BankAccountService();
@@ -28,8 +29,11 @@ const ECommerce: React.FC = () => {
 
     if(bankAccountCtx != null && bankAccountCtx?.bankAccount == undefined){
         const response = await bankAccountService.getAccountByUserId(userId)
-        
+
         bankAccountCtx.setBankAccount(response.data)
+    }
+    if(!bankAccountCtx?.bankAccount || bankAccountCtx?.bankAccount.status != StatusBankAccount.Activated){
+      navigate("/conta")
     }
   }
 

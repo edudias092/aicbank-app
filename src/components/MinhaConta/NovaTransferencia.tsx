@@ -4,13 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { BankAccountService } from "../../common/services/BankAccountService";
 import { getAccountUserId, getAccountUserEmail, tokenIsExpired } from "../../common/utilities/authFunctions";
 import { ContaContext } from "../../contexts/ContaContextProvider";
-import { ChargeDTO } from "../../types/charge";
 import { ResponseDTO } from "../../types/ResponseDTO";
-import { CelcashPaymentRequestDto, CelcashPaymentType } from "../../types/celcashPaymentRequestDto";
+import { CelcashPaymentRequestDto } from "../../types/celcashPaymentRequestDto";
 import { ErrorAlert } from "../Alerts";
-import { DayPicker } from "react-day-picker";
 import { IMaskInput } from "react-imask";
 import Breadcrumb from "../Breadcrumbs/Breadcrumb";
+import { StatusBankAccount } from "../../types/bankaccount";
 
 export const NovaTransferencia = () => {
 
@@ -19,7 +18,6 @@ export const NovaTransferencia = () => {
     
     const { formState: {errors, isValid}, register, setValue, handleSubmit, watch  } = useForm<CelcashPaymentRequestDto>();
     
-    const [selectingPayday, setSelectingPayday] = useState(false);
     const [sendingToApi, setSendingToApi] = useState(false);
     const [error, setError] = useState<string>();
 
@@ -68,6 +66,10 @@ export const NovaTransferencia = () => {
             
             bankAccountCtx.setBankAccount(response.data)
         }
+
+        if(!bankAccountCtx?.bankAccount || bankAccountCtx?.bankAccount.status != StatusBankAccount.Activated){
+            navigate("/conta")
+        }
     }
 
     const handleType = (type: string) => {
@@ -98,12 +100,12 @@ export const NovaTransferencia = () => {
     },[bankAccountCtx?.bankAccount])
 
     return <>
-    <Breadcrumb pageName="Nova Cobrança - Boleto" parent="Cobranças" parentRoute="/cobrancas" />
+    <Breadcrumb pageName="Nova Transferência/Pix" parent="Cobranças" parentRoute="/cobrancas" />
 
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">
-                Cobrança Boleto
+            Pix
             </h3>
         </div>
         <form onSubmit={handleSubmit(sendPayment)}>

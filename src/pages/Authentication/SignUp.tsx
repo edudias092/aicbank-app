@@ -19,7 +19,8 @@ type FormRegister = {
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
   const [error, setError] = useState<string>();
-  
+  const [sendingToApi, setSendingToApi] = useState(false);
+
   const { register, handleSubmit, formState: { errors, isValid } } = useForm<FormRegister>();
 
   useEffect(() => {
@@ -33,9 +34,10 @@ const SignUp: React.FC = () => {
 
   const enviarRegistro = async (data: any) => {
     if(!isValid) return;
-    
-    const response = await Registro(data.email, data.password, data.confirmPassword);
+    setSendingToApi(() => true);
 
+    const response = await Registro(data.email, data.password, data.confirmPassword);
+    setSendingToApi(() => false);
     if (!response.ok) {
       if (response.status === 400) {
         let result = await response.json();
@@ -147,11 +149,18 @@ const SignUp: React.FC = () => {
                 </div>
 
                 <div className="mb-5">
-                  <input
+                  
+                  
+                  <button
                     type="submit"
-                    value="Criar conta"
-                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                  />
+                    disabled={sendingToApi}
+                    className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                  >
+                    {sendingToApi 
+                        ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>
+                        : "Criar Conta"
+                    }
+                  </button>
                 </div>
 
                 {false && <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">

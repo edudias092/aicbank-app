@@ -11,7 +11,11 @@ import { ErrorAlert } from "../Alerts";
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../common/utilities/authFunctions";
 import { useNavigate } from "react-router-dom";
 
-export const FormCadastro = () => {
+type FormCadastroProps = {
+    readonly?: boolean
+}
+
+export const FormCadastro = ({readonly = false}: FormCadastroProps) => {
     const bankAccountCtx = useContext(ContaContext);
     
     const [apiError, setApiError] = useState<string[]>([]);
@@ -30,10 +34,7 @@ export const FormCadastro = () => {
 
             data.type = parseInt(data.type.toString());
 
-            if(!bankAccountCtx?.bankAccount)
-                result = await bankAccountService.createAccount(data);
-            else
-                result = await bankAccountService.updateAccount(data);          
+            result = await bankAccountService.createAccount(data);       
 
             const response = result as ResponseDTO<BankAccountDTO>
             
@@ -42,18 +43,15 @@ export const FormCadastro = () => {
                 setApiError(response as string[]);
             }
             else {
-                
                 bankAccountCtx?.setBankAccount(response.data);
-                
+                navigate("/conta")
             }
         }
 
-        console.log('formdata', data);
         setSendingToApi(false);
     }
 
     const getAccount = async (userId: number | null) => {
-        console.log(email);
         if(!userId || !email || tokenIsExpired()){
             navigate("/login");
             return;
@@ -61,7 +59,7 @@ export const FormCadastro = () => {
 
         if(bankAccountCtx != null && bankAccountCtx?.bankAccount == undefined){
             const response = await bankAccountService.getAccountByUserId(userId)
-            
+
             bankAccountCtx.setBankAccount(response.data)
             reset(response.data);
         }
@@ -74,7 +72,7 @@ export const FormCadastro = () => {
     useEffect(() => {
         getAccount(userId).then().catch(e => console.log(e));
 
-    },[])
+    },[bankAccountCtx?.bankAccount])
 
 
     return <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -227,7 +225,6 @@ export const FormCadastro = () => {
                         />
                     </div>
                 </>}
-
                 <fieldset>
                     <legend className="text-xl">Endereço</legend>
                     <hr className="text-slate-300 my-2"/>
@@ -358,19 +355,21 @@ export const FormCadastro = () => {
                         
                     </div>
                 </div>}
-                <div className="mb-6">
-                    {apiError.length > 0 && 
-                        <ErrorAlert message={apiError.join(',')} action={() => setApiError([])} />
-                    }
-                </div>
-                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
-                    disabled={sendingToApi}    
-                >
-                    {sendingToApi 
-                        ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>
-                        : "Salvar"
-                    }
-                </button>
+                {!readonly && <>
+                    <div className="mb-6">
+                        {apiError.length > 0 && 
+                            <ErrorAlert message={apiError.join(',')} action={() => setApiError([])} />
+                        }
+                    </div>
+                    <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                        disabled={sendingToApi}    
+                    >
+                        {sendingToApi 
+                            ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>
+                            : "Salvar"
+                        }
+                    </button>
+                </>}
             </div>
         </form>
     </div>

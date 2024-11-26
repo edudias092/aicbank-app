@@ -8,6 +8,7 @@ import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../com
 import { useNavigate } from "react-router-dom";
 import { TabelaExtrato } from "./TabelaExtrato";
 import { BalanceDTO } from "../../types/bankStatement";
+import { StatusBankAccount } from "../../types/bankaccount";
 
 export type BankStatementFilter = {
     initialDate: Date,
@@ -78,8 +79,11 @@ export const Extrato = () => {
 
         if(bankAccountCtx != null && bankAccountCtx?.bankAccount == undefined){
             const response = await bankAccountService.getAccountByUserId(userId)
-            
+
             bankAccountCtx.setBankAccount(response.data)
+        }
+        if(!bankAccountCtx?.bankAccount || bankAccountCtx?.bankAccount.status != StatusBankAccount.Activated){
+            navigate("/conta")
         }
     }
 

@@ -10,7 +10,13 @@ export type MandatoryDocumentsDTO = {
     front?: FileList,
     back?: FileList,
     address?: FileList,
-
+    lastContract?: FileList,
+    cnpjCard?: FileList,
+    electionRecord?: FileList,
+    statute?: FileList,
+    associateDocument: string,
+    associateType: "partner" | "attorney" | "personinvolved",
+    associateName: string,
 }
 
 export enum MandatoryDocumentType {

@@ -8,6 +8,7 @@ import { ErrorAlert } from "../Alerts";
 import { ChargeDTO } from "../../types/charge";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { CustomerDTO } from "../../types/customer";
+import { StatusBankAccount } from "../../types/bankaccount";
 
 export const DetalheCobranca = () => {
 
@@ -57,8 +58,11 @@ export const DetalheCobranca = () => {
 
         if(bankAccountCtx != null && bankAccountCtx?.bankAccount == undefined){
             const response = await bankAccountService.getAccountByUserId(userId)
-            
+
             bankAccountCtx.setBankAccount(response.data)
+        }
+        if(!bankAccountCtx?.bankAccount || bankAccountCtx?.bankAccount.status != StatusBankAccount.Activated){
+            navigate("/conta")
         }
     }
 
@@ -246,7 +250,7 @@ export const DetalheCobranca = () => {
                                 : "Visualizar Boleto"
                             }
                         </button>
-                        <button className="w-1/3 justify-center rounded bg-primary p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
+                        <button className="flex w-1/3 justify-center rounded bg-primary p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
                             disabled={sendingToApi} onClick={() => viewFatura()}
                         >
                             {sendingToApi 
@@ -254,7 +258,7 @@ export const DetalheCobranca = () => {
                                 : "Visualizar Fatura"
                             }
                         </button>
-                        <button className="w-1/3 justify-center rounded bg-danger p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
+                        <button className="flex w-1/3 justify-center rounded bg-danger p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
                             disabled={sendingToApi} 
                         >
                             {sendingToApi 

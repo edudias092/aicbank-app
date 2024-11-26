@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { TabelaCobrancas } from "./TabelaCobrancas";
 import { ChargeDTO, getActualValue, getPayDay } from "../../types/charge";
 import { CustomModal } from "../../common/components/CustomModal";
+import { StatusBankAccount } from "../../types/bankaccount";
 
 export type BankChargeFilter = {
     initialDate: Date,
@@ -83,6 +84,9 @@ export const ListaCobranças = () => {
             const response = await bankAccountService.getAccountByUserId(userId)
             
             bankAccountCtx.setBankAccount(response.data)
+        }
+        if(!bankAccountCtx?.bankAccount || bankAccountCtx?.bankAccount.status != StatusBankAccount.Activated){
+            navigate("/conta")
         }
     }
 

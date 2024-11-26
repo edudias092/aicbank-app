@@ -66,7 +66,11 @@ export class BankAccountService {
         formData.append("monthlyIncome", sendMandatoryDocuments.monthlyIncome.toString());
         formData.append("about", sendMandatoryDocuments.about);
         formData.append("socialMediaLink", sendMandatoryDocuments.socialMediaLink);
+        formData.append("associateName", sendMandatoryDocuments.associateName);
+        formData.append("associateType", sendMandatoryDocuments.associateType.toString());
+        formData.append("associateDocument", sendMandatoryDocuments.associateDocument);
         formData.append("type", sendMandatoryDocuments.type.toString());
+
         if(sendMandatoryDocuments.selfie)
         formData.append("selfie", sendMandatoryDocuments.selfie[0]);
         if(sendMandatoryDocuments.front)
@@ -75,6 +79,15 @@ export class BankAccountService {
         formData.append("back", sendMandatoryDocuments.back[0]);
         if(sendMandatoryDocuments.address)
         formData.append("address", sendMandatoryDocuments.address[0]);
+
+        if(sendMandatoryDocuments.cnpjCard)
+            formData.append("cnpjCard", sendMandatoryDocuments.cnpjCard[0]);
+        if(sendMandatoryDocuments.electionRecord)
+            formData.append("electionRecord", sendMandatoryDocuments.electionRecord[0]);
+        if(sendMandatoryDocuments.lastContract)
+            formData.append("lastContract", sendMandatoryDocuments.lastContract[0]);
+        if(sendMandatoryDocuments.statute)
+            formData.append("statute", sendMandatoryDocuments.statute[0]);
 
         let response = fetch(`${baseUrl}/${bankAccountId}/documents`,{
             method: "POST",

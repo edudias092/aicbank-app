@@ -10,6 +10,7 @@ import { ChargeDTO } from "../../types/charge";
 import { IMaskInput } from "react-imask";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { ErrorAlert } from "../Alerts";
+import { StatusBankAccount } from "../../types/bankaccount";
 
 export const CobrancaBoleto = () => {
 
@@ -72,9 +73,13 @@ export const CobrancaBoleto = () => {
         }
 
         if(bankAccountCtx != null && bankAccountCtx?.bankAccount == undefined){
-            const response = await bankAccountService.getAccountByUserId(userId)
-            
+            const response = await bankAccountService.getAccountByUserId(userId);
+
             bankAccountCtx.setBankAccount(response.data)
+        }
+
+        if(!bankAccountCtx?.bankAccount || bankAccountCtx?.bankAccount.status != StatusBankAccount.Activated){
+            navigate("/conta")
         }
     }
 
