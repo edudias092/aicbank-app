@@ -4,10 +4,10 @@ import { BankAccountDTO } from "../../types/bankaccount";
 import { BankStatement } from "../../types/bankStatement";
 import { CelcashPaymentRequestDto } from "../../types/celcashPaymentRequestDto";
 import { ChargeDTO } from "../../types/charge";
+import { ChargesSumByDate } from "../../types/chargesGraphics";
 import { MandatoryDocumentsDTO } from "../../types/mandatoryDocuments";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { getUserToken } from "../utilities/authFunctions";
-import { buildQueryParams } from "../utilities/helpers";
 const baseUrl: string = "http://localhost:5164/api/bankaccount";
 
 export class BankAccountService {
@@ -167,6 +167,24 @@ export class BankAccountService {
             method: "POST",
             headers: this.defaultHeaders,
             body: JSON.stringify(paymentRequest)
+        })
+
+        return response.then(r => r.json()).catch(e => e);
+    }
+
+    public getChargesSumByDate(bankAccountId: number) : Promise<ResponseDTO<ChargesSumByDate> | string | string[]>{
+        let response = fetch(`${baseUrl}/${bankAccountId}/charges/sumByDate`,{
+            method: "GET",
+            headers: this.defaultHeaders
+        })
+
+        return response.then(r => r.json()).catch(e => e);
+    }
+
+    public getChargesSumWeekly(bankAccountId: number) : Promise<ResponseDTO<ChargesSumByDate> | string | string[]>{
+        let response = fetch(`${baseUrl}/${bankAccountId}/charges/sumWeekly`,{
+            method: "GET",
+            headers: this.defaultHeaders
         })
 
         return response.then(r => r.json()).catch(e => e);

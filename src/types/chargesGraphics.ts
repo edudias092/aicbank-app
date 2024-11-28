@@ -1,0 +1,1 @@
+export type ChargesSumByDate = { [key: string]: number };

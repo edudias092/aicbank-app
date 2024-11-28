@@ -73,27 +73,32 @@ const ECommerce: React.FC = () => {
 
   return (
     <>
-      {sendingToApi && <Loader />}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Saldo disponível da conta" total={balance?.enabled ? "R$ "+balance?.enabled.toLocaleString() : "R$ 0,00"} >
-          <BiCheckSquare className='text-2xl text-success' />
-        </CardDataStats>
-        <CardDataStats title="Saldo em trânsito" total={balance?.requested ? "R$ "+balance?.requested.toLocaleString() : "R$ 0,00"} >
-        <BiRefresh className='text-2xl text-primary' />
-        </CardDataStats>
-        <CardDataStats title="Saldo à receber de boleto" total={balance?.blockedBoleto ? "R$ "+balance?.blockedBoleto.toLocaleString() : "R$ 0,00"} >
-          <BiCalendarPlus className='text-2xl text-warning' />
-        </CardDataStats>
-        <CardDataStats title="Saldo à receber de cartão" total={balance?.blockedCard ? "R$ "+balance?.blockedCard.toLocaleString() : "R$ 0,00"} >
-          <BiCalendarPlus className='text-2xl text-danger' />
-        </CardDataStats>
-      </div>
+    {sendingToApi 
+      ? <Loader />
+      :
+      <>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+          <CardDataStats title="Saldo disponível da conta" total={balance?.enabled ? "R$ "+balance?.enabled.toLocaleString() : "R$ 0,00"} >
+            <BiCheckSquare className='text-2xl text-success' />
+          </CardDataStats>
+          <CardDataStats title="Saldo em trânsito" total={balance?.requested ? "R$ "+balance?.requested.toLocaleString() : "R$ 0,00"} >
+          <BiRefresh className='text-2xl text-primary' />
+          </CardDataStats>
+          <CardDataStats title="Saldo à receber de boleto" total={balance?.blockedBoleto ? "R$ "+balance?.blockedBoleto.toLocaleString() : "R$ 0,00"} >
+            <BiCalendarPlus className='text-2xl text-warning' />
+          </CardDataStats>
+          <CardDataStats title="Saldo à receber de cartão" total={balance?.blockedCard ? "R$ "+balance?.blockedCard.toLocaleString() : "R$ 0,00"} >
+            <BiCalendarPlus className='text-2xl text-danger' />
+          </CardDataStats>
+        </div>
 
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
-        <ChartTwo />
-        <ChartThree />
-      </div>
+        <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+          <ChartOne />
+          <ChartTwo />
+          {/* <ChartThree /> */}
+        </div>
+      </>
+    }
     </>
   );
 };
