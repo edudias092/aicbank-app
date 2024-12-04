@@ -10,6 +10,7 @@ import { TabelaCobrancas } from "./TabelaCobrancas";
 import { ChargeDTO, getActualValue, getPayDay } from "../../types/charge";
 import { CustomModal } from "../../common/components/CustomModal";
 import { StatusBankAccount } from "../../types/bankaccount";
+import { Calendar } from "primereact/calendar";
 
 export type BankChargeFilter = {
     initialDate: Date,
@@ -151,23 +152,20 @@ export const ListaCobranças = () => {
                                 <label className="mb-2.5 block text-black dark:text-white">
                                     Data Inicial:
                                 </label>
-                                <input type="text" 
+                                <input type="hidden" 
                                     defaultValue={new Date().toLocaleDateString()}
                                     value={watch("initialDateString")}
                                     {...register('initialDateString', {required: true})} 
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                     onFocus={_ => { setSelectingInitialDate(true); }}
                                 />
-                                {selectingInitialDate && 
-                                    <DayPicker
-                                            captionLayout="dropdown"
-                                            style={ {position: "absolute", top:370, backgroundColor:"white", padding: 10, border:1}}
-                                            mode="single"
-                                            selected={watch("initialDate")}
-                                            onSelect={e => selectInitialDate(e)}
-                                            defaultMonth={new Date()}
-                                        />
-                                }
+                                <Calendar
+                                    dateFormat="dd/mm/yy"
+                                    locale="pt"
+                                    className="w-full rounded border-[1.5px] border-stroke py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    value={watch("initialDate")}
+                                    {...register('initialDate', {required: true})} 
+                                />
 
                                 {errors.initialDateString && <span className="text-red-500">Data Inicial é obrigatório.</span>}
                             </div>
@@ -177,25 +175,22 @@ export const ListaCobranças = () => {
                                 <label className="mb-2.5 block text-black dark:text-white">
                                     Data Final:
                                 </label>
-                                <input type="text" 
+                                <input type="hidden" 
                                     defaultValue={new Date().toLocaleDateString()}
                                     value={watch("finalDateString")}
                                     {...register('finalDateString', {required: true})} 
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                     onFocus={_ => { setSelectingFinalDate(true);}}
                                 />
-                                {selectingFinalDate && 
-                                    <DayPicker
-                                            captionLayout="dropdown"
-                                            style={ {position: "absolute", top:370, right: 150, backgroundColor:"white", padding: 10, border:1}}
-                                            mode="single"
-                                            selected={watch("finalDate")}
-                                            onSelect={e => selectFinalDate(e)}
-                                            defaultMonth={new Date()}
-                                        />
-                                }
+                                <Calendar
+                                    dateFormat="dd/mm/yy"
+                                    locale="pt"
+                                    className="w-full rounded border-[1.5px] border-stroke py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    value={watch("finalDate")}
+                                    {...register('finalDate', {required: true})} 
+                                />
 
-                                {errors.initialDateString && <span className="text-red-500">Data Inicial é obrigatório.</span>}
+                                {errors.finalDateString && <span className="text-red-500">Data Final é obrigatório.</span>}
                             </div>
                         </div>
                         <div className="w-full xl:w-1/4">

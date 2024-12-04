@@ -8,6 +8,7 @@ import { BankAccountService } from "../../common/services/BankAccountService";
 import { ContaContext } from "../../contexts/ContaContextProvider";
 import { DayPicker } from "react-day-picker";
 import { IMaskInput } from "react-imask";
+import { Calendar } from "primereact/calendar";
 
 export const FormDocumentos = () => {
 
@@ -94,26 +95,18 @@ export const FormDocumentos = () => {
                                 <label className="mb-2.5 block text-black dark:text-white">
                                     Data de Nascimento:
                                 </label>
-                                <input type="text" 
+                                <input type="hidden" 
                                     value={watch("birthDateString")}
                                     {...register('birthDateString', {required: true})} 
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onFocus={_ => { setSelectingDate(true); setShowCalendar(true); }}
-                                    onBlur={_ => { if(!selectingDate) setShowCalendar(false); setSelectingDate(false); }}
                                 />
-                                {showCalendar && 
-                                    <DayPicker
-                                            captionLayout="dropdown"
-                                            style={ {position: "absolute", top:370, right: 150, backgroundColor:"white", padding: 10, border:1}}
-                                            mode="single"
-                                            selected={watch("birthDate")}
-                                            onSelect={e => handleCalendar(e ?? new Date())}
-                                            defaultMonth={watch("birthDate")}
-                                            onDayMouseEnter={_ => setSelectingDate(true)}
-                                            onDayMouseLeave={_ => setSelectingDate(false)}
-                                        />
-                                }
-
+                                <Calendar
+                                    dateFormat="dd/mm/yy"
+                                    locale="pt"
+                                    className="w-full rounded border-[1.5px] border-stroke py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    value={watch("birthDate")}
+                                    {...register('birthDate', {required: true})} 
+                                />
                                 {errors.birthDateString && <span className="text-red-500">Data de Nascimento é obrigatório.</span>}
                             </div>
                         </div>

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
-import ChartThree from '../../components/Charts/ChartThree';
 import ChartTwo from '../../components/Charts/ChartTwo';
 import { useNavigate } from 'react-router-dom';
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from '../../common/utilities/authFunctions';
@@ -32,7 +31,7 @@ const ECommerce: React.FC = () => {
 
         bankAccountCtx.setBankAccount(response.data)
     }
-    if(!bankAccountCtx?.bankAccount || bankAccountCtx?.bankAccount.status != StatusBankAccount.Activated){
+    if(bankAccountCtx?.bankAccount?.status != StatusBankAccount.Activated){
       navigate("/conta")
     }
   }

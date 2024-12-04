@@ -3,7 +3,6 @@ import { BankAccountService } from "../../common/services/BankAccountService"
 import Breadcrumb from "../Breadcrumbs/Breadcrumb"
 import { ContaContext } from "../../contexts/ContaContextProvider";
 import { useForm } from "react-hook-form";
-import { DayPicker } from "react-day-picker";
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../common/utilities/authFunctions";
 import { useNavigate } from "react-router-dom";
 import { ChargeDTO } from "../../types/charge";
@@ -11,6 +10,7 @@ import { IMaskInput } from "react-imask";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { ErrorAlert } from "../Alerts";
 import { StatusBankAccount } from "../../types/bankaccount";
+import { Calendar } from "primereact/calendar"
 
 export const CobrancaBoleto = () => {
 
@@ -19,7 +19,6 @@ export const CobrancaBoleto = () => {
     
     const { formState: {errors, isValid}, register, setValue, handleSubmit, watch  } = useForm<ChargeDTO>();
     
-    const [selectingPayday, setSelectingPayday] = useState(false);
     const [sendingToApi, setSendingToApi] = useState(false);
     const [error, setError] = useState<string>();
 
@@ -57,13 +56,6 @@ export const CobrancaBoleto = () => {
     }
 
     const [mask, _] = useState(['000.000.000-00', '00.000.000/0000-00']);
-
-    const selectPayday = (d: Date | undefined) => {
-        const newDate = d ?? new Date();
-        setValue("paydate", newDate); 
-        setValue("paydayString", newDate.toLocaleDateString()); 
-        setSelectingPayday(false);
-    }
     
     const getAccount = async (userId: number | null) => {
 
@@ -106,23 +98,20 @@ export const CobrancaBoleto = () => {
                                 <label className="mb-2.5 block text-black dark:text-white">
                                     Data de Vencimento <span className="text-meta-1">*</span>:
                                 </label>
-                                <input type="text" 
+                                <input type="hidden" 
                                     defaultValue={new Date().toLocaleDateString()}
                                     value={watch("paydayString")}
                                     {...register('paydayString', {required: true})} 
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onFocus={_ => { setSelectingPayday(true); }}
+                                    readOnly
                                 />
-                                {selectingPayday && 
-                                    <DayPicker
-                                            captionLayout="dropdown"
-                                            style={ {position: "absolute", top:370, backgroundColor:"white", padding: 10, border:1}}
-                                            mode="single"
-                                            selected={watch("paydate")}
-                                            onSelect={e => selectPayday(e)}
-                                            defaultMonth={new Date()}
-                                        />
-                                }
+                                <Calendar
+                                    dateFormat="dd/mm/yy"
+                                    locale="pt"
+                                    className="w-full rounded border-[1.5px] border-stroke py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    value={watch("paydate")}
+                                    {...register('paydate', {required: true})} 
+                                />
 
                                 {errors.paydate && <span className="text-red-500">Data de Vencimento é obrigatório.</span>}
                             </div>

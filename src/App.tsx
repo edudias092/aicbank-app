@@ -15,6 +15,20 @@ import { CobrancaBoleto } from './components/MinhaConta/CobrancaBoleto';
 import { DetalheCobranca } from './components/MinhaConta/DetalheCobranca';
 import { ListaCobranças } from './components/MinhaConta/ListaCobrancas';
 import { NovaTransferencia } from './components/MinhaConta/NovaTransferencia';
+import { addLocale } from 'primereact/api';
+import 'primereact/resources/themes/saga-blue/theme.css'; // Ou outro tema de sua escolha
+import 'primereact/resources/primereact.min.css'; // Estilos gerais do PrimeReact
+
+addLocale('pt', {
+  firstDayOfWeek: 1,
+  dayNames: ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'],
+  dayNamesShort: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
+  dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+  monthNames: ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'],
+  monthNamesShort: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
+  today: 'Hoje',
+  clear: 'Limpar'
+});
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);

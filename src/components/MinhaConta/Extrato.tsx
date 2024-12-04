@@ -3,12 +3,12 @@ import { BankAccountService } from "../../common/services/BankAccountService"
 import Breadcrumb from "../Breadcrumbs/Breadcrumb"
 import { ContaContext } from "../../contexts/ContaContextProvider";
 import { useForm } from "react-hook-form";
-import { DayPicker } from "react-day-picker";
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../common/utilities/authFunctions";
 import { useNavigate } from "react-router-dom";
 import { TabelaExtrato } from "./TabelaExtrato";
 import { BalanceDTO } from "../../types/bankStatement";
 import { StatusBankAccount } from "../../types/bankaccount";
+import { Calendar } from "primereact/calendar";
 
 export type BankStatementFilter = {
     initialDate: Date,
@@ -23,8 +23,6 @@ export const Extrato = () => {
     
     const { formState: {errors, isValid}, register, setValue, handleSubmit, watch  } = useForm<BankStatementFilter>();
     
-    const [selectingInitialDate, setSelectingInitialDate] = useState(false);
-    const [selectingFinalDate, setSelectingFinalDate] = useState(false);
     const [sendingToApi, setSendingToApi] = useState(false);
     const [balances, setBalances] = useState<BalanceDTO[]>();
     const [periodDescription, setPeriodDescription] = useState("");
@@ -55,21 +53,6 @@ export const Extrato = () => {
         }
     }
 
-    const selectFinalDate = (d: Date | undefined) => {
-        const newDate = d ?? new Date();
-        setValue("finalDate", newDate); 
-        setValue("finalDateString", newDate.toLocaleDateString()); 
-        setSelectingFinalDate(false);
-    }
-    
-    const selectInitialDate = (d: Date | undefined) => {
-        const newDate = d ?? new Date();
-        setValue("initialDate", newDate); 
-        setValue("initialDateString", newDate.toLocaleDateString()); 
-
-        setSelectingInitialDate(false);
-    }
-
     const getAccount = async (userId: number | null) => {
 
         if(!userId || !email || tokenIsExpired()){
@@ -82,7 +65,7 @@ export const Extrato = () => {
 
             bankAccountCtx.setBankAccount(response.data)
         }
-        if(!bankAccountCtx?.bankAccount || bankAccountCtx?.bankAccount.status != StatusBankAccount.Activated){
+        if(bankAccountCtx?.bankAccount?.status != StatusBankAccount.Activated){
             navigate("/conta")
         }
     }
@@ -111,23 +94,19 @@ export const Extrato = () => {
                                 <label className="mb-2.5 block text-black dark:text-white">
                                     Data Inicial:
                                 </label>
-                                <input type="text" 
+                                <input type="hidden" 
                                     defaultValue={new Date().toLocaleDateString()}
                                     value={watch("initialDateString")}
                                     {...register('initialDateString', {required: true})} 
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onFocus={_ => { setSelectingInitialDate(true); }}
                                 />
-                                {selectingInitialDate && 
-                                    <DayPicker
-                                            captionLayout="dropdown"
-                                            style={ {position: "absolute", top:370, backgroundColor:"white", padding: 10, border:1}}
-                                            mode="single"
-                                            selected={watch("initialDate")}
-                                            onSelect={e => selectInitialDate(e)}
-                                            defaultMonth={new Date()}
-                                        />
-                                }
+                                <Calendar
+                                    dateFormat="dd/mm/yy"
+                                    locale="pt"
+                                    className="w-full rounded border-[1.5px] border-stroke py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    value={watch("initialDate")}
+                                    {...register('initialDate', {required: true})} 
+                                />
 
                                 {errors.initialDateString && <span className="text-red-500">Data Inicial é obrigatório.</span>}
                             </div>
@@ -137,23 +116,19 @@ export const Extrato = () => {
                                 <label className="mb-2.5 block text-black dark:text-white">
                                     Data Final:
                                 </label>
-                                <input type="text" 
+                                <input type="hidden" 
                                     defaultValue={new Date().toLocaleDateString()}
                                     value={watch("finalDateString")}
                                     {...register('finalDateString', {required: true})} 
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onFocus={_ => { setSelectingFinalDate(true);}}
                                 />
-                                {selectingFinalDate && 
-                                    <DayPicker
-                                            captionLayout="dropdown"
-                                            style={ {position: "absolute", top:370, right: 150, backgroundColor:"white", padding: 10, border:1}}
-                                            mode="single"
-                                            selected={watch("finalDate")}
-                                            onSelect={e => selectFinalDate(e)}
-                                            defaultMonth={new Date()}
-                                        />
-                                }
+                                <Calendar
+                                    dateFormat="dd/mm/yy"
+                                    locale="pt"
+                                    className="w-full rounded border-[1.5px] border-stroke py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    value={watch("finalDate")}
+                                    {...register('finalDate', {required: true})} 
+                                />
 
                                 {errors.initialDateString && <span className="text-red-500">Data Inicial é obrigatório.</span>}
                             </div>
