@@ -1,7 +1,6 @@
 import { ApexOptions } from 'apexcharts';
 import React, { useContext, useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { useNavigate } from 'react-router-dom';
 import { ContaContext } from '../../contexts/ContaContextProvider';
 import { BankAccountService } from '../../common/services/BankAccountService';
 import { ChargesSumByDate } from '../../types/chargesGraphics';
@@ -75,7 +74,6 @@ interface ChartTwoState {
 }
 
 const ChartTwo: React.FC = () => {
-  const navigate = useNavigate();
   const bankAccountContext = useContext(ContaContext);
   const [loading, setLoading] = useState(false);
   
@@ -120,9 +118,6 @@ const ChartTwo: React.FC = () => {
       }
 
       setLoading(() => false);
-    }
-    else{
-      navigate("/logout");
     }
   }
   const [state, setState] = useState<ChartTwoState>({

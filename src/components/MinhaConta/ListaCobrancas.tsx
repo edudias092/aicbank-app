@@ -75,19 +75,25 @@ export const ListaCobranças = () => {
     }
 
     const getAccount = async (userId: number | null) => {
-
         if(!userId || !email || tokenIsExpired()){
             navigate("/login");
             return;
         }
+        let shouldRedirect = false;
 
         if(bankAccountCtx != null && bankAccountCtx?.bankAccount == undefined){
             const response = await bankAccountService.getAccountByUserId(userId)
-            
-            bankAccountCtx.setBankAccount(response.data)
+    
+            bankAccountCtx.setBankAccount(response.data);
+
+            shouldRedirect = response.data.status != StatusBankAccount.Activated;
         }
-        if(!bankAccountCtx?.bankAccount || bankAccountCtx?.bankAccount.status != StatusBankAccount.Activated){
-            navigate("/conta")
+        else{
+            shouldRedirect = bankAccountCtx?.bankAccount?.status != StatusBankAccount.Activated;
+        }
+        
+        if(shouldRedirect){
+          navigate("/conta")
         }
     }
 

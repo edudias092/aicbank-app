@@ -13,14 +13,10 @@ export type TabelaCobrancasProps = {
 export const TabelaCobrancas = ({periodDescription, charges, selectCancelCharge} : TabelaCobrancasProps) => {
   const navigate = useNavigate();
 
-  const viewFatura = (id: number) => {
-    if(charges){
-      var charge = charges[id];
-  
+  const viewFatura = (charge: ChargeDTO) => {
       if(charge){
         window.open(charge.paymentLink, "_blank")
       }
-    }
   }
   
   const goToDetalhes = (id: string) => {
@@ -29,13 +25,13 @@ export const TabelaCobrancas = ({periodDescription, charges, selectCancelCharge}
     }
   }
 
-  const actionsTemplate = (charge: ChargeDTO) => {
-    <>
+  const actionsTemplate = (charge: ChargeDTO): any => {
+    return <>
       <p className="flex">
         <button type='button' onClick={() => goToDetalhes(charge.myId)}>
           <BiPlusCircle title='Ver Detalhes' className='cursor-pointer border-2 rounded-md mx-1' size={30}/>
         </button>
-        <button type='button' onClick={() => viewFatura(key)}>
+        <button type='button' onClick={() => viewFatura(charge)}>
           <BiFile title='Visualizar Fatura' className='cursor-pointer border-2 rounded-md mx-1' size={30}/>
         </button>
         <button type='button' onClick={() => selectCancelCharge(charge.myId)}>

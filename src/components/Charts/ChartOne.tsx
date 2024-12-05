@@ -3,10 +3,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { BankAccountService } from '../../common/services/BankAccountService';
 import { ContaContext } from '../../contexts/ContaContextProvider';
-import { useNavigate } from 'react-router-dom';
 import { ChargesSumByDate } from '../../types/chargesGraphics';
 import { ResponseDTO } from '../../types/ResponseDTO';
-import Loader from '../../common/Loader';
 
 const options: ApexOptions = {
   legend: {
@@ -116,7 +114,6 @@ interface ChartOneState {
 }
 
 const ChartOne: React.FC = () => {
-  const navigate = useNavigate();
   const bankAccountContext = useContext(ContaContext);
   const [loading, setLoading] = useState(false);
 
@@ -185,9 +182,6 @@ const ChartOne: React.FC = () => {
       }
 
       setLoading(() => false);
-    }
-    else{
-      navigate("/logout");
     }
   }
 
