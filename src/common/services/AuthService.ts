@@ -1,4 +1,6 @@
-const baseUrl: string = "http://localhost:5164/api/Auth";
+import apiConfig from "../../config/apiConfig";
+
+const baseUrl: string = `${apiConfig.baseUrl}/Auth`;
 
 export const Login = async (email: string, password: string) : Promise<Response> => {
 

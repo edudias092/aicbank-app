@@ -15,7 +15,7 @@ export class BankAccountService {
     private baseUrl: string | undefined;
     constructor() {
         const userToken = getUserToken();
-        this.baseUrl = apiConfig.baseUrl;
+        this.baseUrl = `${apiConfig.baseUrl}/bankaccount`;
         this.defaultHeaders = {
             "Content-type": "application/json",
             "Authorization": `Bearer ${userToken?.token}`
