@@ -1,0 +1,52 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  vite_build_dir: 'dist' # Diretório de saída padrão do Vite
+  server_user: 'root'
+  server_host: ${{ variables.server_host }}
+  server_path: '/sistemas/aicbank/webapp'
+
+steps:
+  # 1. Instalar dependências
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '16.x' # Altere para a versão do Node.js que você usa
+    displayName: 'Usar Node.js'
+
+  - script: |
+      npm ci
+      npm run build
+    displayName: 'Instalar dependências e build do Vite'
+
+  # 2. Compactar os arquivos de build
+  - script: |
+      mkdir -p $(Build.ArtifactStagingDirectory)
+      tar -czf $(Build.ArtifactStagingDirectory)/vite_app.tar.gz -C $(vite_build_dir) .
+    displayName: 'Compactar arquivos de build'
+
+  # 3. Baixar a chave privada no pipeline
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: 'id_rsa' # Nome do arquivo seguro configurado no Azure DevOps
+    displayName: 'Baixar chave SSH privada'
+
+  # 4. Configurar a chave SSH e copiar os arquivos usando SCP
+  - script: |
+      mkdir -p ~/.ssh
+      cp $(Agent.TempDirectory)/id_rsa ~/.ssh/id_rsa
+      chmod 600 ~/.ssh/id_rsa
+
+      # Usar SCP para copiar os arquivos para o servidor VPS
+      scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $(Build.ArtifactStagingDirectory)/vite_app.tar.gz $(server_user)@$(server_host):$(server_path)
+    displayName: 'Copiar arquivos para o VPS'
+
+  # 5. Descompactar os arquivos no servidor VPS
+  - script: |
+      ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $(server_user)@$(server_host) "cd $(server_path) && tar -xzf vite_app.tar.gz && rm vite_app.tar.gz"
+    displayName: 'Descompactar arquivos no servidor'

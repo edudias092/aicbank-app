@@ -3,7 +3,6 @@ import { BankAccountService } from "../../common/services/BankAccountService"
 import Breadcrumb from "../Breadcrumbs/Breadcrumb"
 import { ContaContext } from "../../contexts/ContaContextProvider";
 import { useForm } from "react-hook-form";
-import { DayPicker } from "react-day-picker";
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../common/utilities/authFunctions";
 import { useNavigate } from "react-router-dom";
 import { TabelaCobrancas } from "./TabelaCobrancas";
@@ -24,9 +23,7 @@ export const ListaCobranças = () => {
     const bankAccountCtx = useContext(ContaContext);
     
     const { formState: {errors, isValid}, register, setValue, handleSubmit, watch  } = useForm<BankChargeFilter>();
-    
-    const [selectingInitialDate, setSelectingInitialDate] = useState(false);
-    const [selectingFinalDate, setSelectingFinalDate] = useState(false);
+
     const [sendingToApi, setSendingToApi] = useState(false);
     const [charges, setCharges] = useState<ChargeDTO[]>();
     const [periodDescription, setPeriodDescription] = useState("");
@@ -57,21 +54,6 @@ export const ListaCobranças = () => {
 
             setSendingToApi(s => s = false);
         }
-    }
-
-    const selectFinalDate = (d: Date | undefined) => {
-        const newDate = d ?? new Date();
-        setValue("finalDate", newDate); 
-        setValue("finalDateString", newDate.toLocaleDateString()); 
-        setSelectingFinalDate(false);
-    }
-    
-    const selectInitialDate = (d: Date | undefined) => {
-        const newDate = d ?? new Date();
-        setValue("initialDate", newDate); 
-        setValue("initialDateString", newDate.toLocaleDateString()); 
-
-        setSelectingInitialDate(false);
     }
 
     const getAccount = async (userId: number | null) => {
@@ -163,7 +145,6 @@ export const ListaCobranças = () => {
                                     value={watch("initialDateString")}
                                     {...register('initialDateString', {required: true})} 
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onFocus={_ => { setSelectingInitialDate(true); }}
                                 />
                                 <Calendar
                                     dateFormat="dd/mm/yy"
@@ -186,7 +167,6 @@ export const ListaCobranças = () => {
                                     value={watch("finalDateString")}
                                     {...register('finalDateString', {required: true})} 
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onFocus={_ => { setSelectingFinalDate(true);}}
                                 />
                                 <Calendar
                                     dateFormat="dd/mm/yy"

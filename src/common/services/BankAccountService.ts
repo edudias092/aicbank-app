@@ -8,12 +8,14 @@ import { ChargesSumByDate } from "../../types/chargesGraphics";
 import { MandatoryDocumentsDTO } from "../../types/mandatoryDocuments";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { getUserToken } from "../utilities/authFunctions";
-const baseUrl: string = "http://localhost:5164/api/bankaccount";
+import apiConfig from "../../config/apiConfig";
 
 export class BankAccountService {
     private readonly defaultHeaders: HeadersInit;
+    private baseUrl: string | undefined;
     constructor() {
         const userToken = getUserToken();
+        this.baseUrl = apiConfig.baseUrl;
         this.defaultHeaders = {
             "Content-type": "application/json",
             "Authorization": `Bearer ${userToken?.token}`
@@ -22,7 +24,7 @@ export class BankAccountService {
     }
     
     public getAccountById(id: number) : Promise<ResponseDTO<BankAccountDTO>>{
-        let response = fetch(`${baseUrl}/${id}`, {
+        let response = fetch(`${this.baseUrl}/${id}`, {
             headers: this.defaultHeaders
         });
 
@@ -30,7 +32,7 @@ export class BankAccountService {
     }
 
     public getAccountByUserId(id: number) : Promise<ResponseDTO<BankAccountDTO>>{
-        let response = fetch(`${baseUrl}/accountuser/${id}`, {
+        let response = fetch(`${this.baseUrl}/accountuser/${id}`, {
             headers: this.defaultHeaders
         });
 
@@ -38,7 +40,7 @@ export class BankAccountService {
     }
 
     public createAccount(bankAccountDTO: BankAccountDTO) : Promise<ResponseDTO<BankAccountDTO> | string[]>{
-        let response = fetch(`${baseUrl}`,{
+        let response = fetch(`${this.baseUrl}`,{
             method: "POST",
             headers: this.defaultHeaders,
             body: JSON.stringify(bankAccountDTO)
@@ -48,7 +50,7 @@ export class BankAccountService {
     }
 
     public updateAccount(bankAccountDTO: BankAccountDTO) : Promise<ResponseDTO<BankAccountDTO> | string[]>{
-        let response = fetch(`${baseUrl}/${bankAccountDTO.id}`,{
+        let response = fetch(`${this.baseUrl}/${bankAccountDTO.id}`,{
             method: "PUT",
             headers: this.defaultHeaders,
             body: JSON.stringify(bankAccountDTO)
@@ -89,7 +91,7 @@ export class BankAccountService {
         if(sendMandatoryDocuments.statute)
             formData.append("statute", sendMandatoryDocuments.statute[0]);
 
-        let response = fetch(`${baseUrl}/${bankAccountId}/documents`,{
+        let response = fetch(`${this.baseUrl}/${bankAccountId}/documents`,{
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${userToken?.token}`
@@ -101,7 +103,7 @@ export class BankAccountService {
     }
 
     public getMovements(id: number, filter: BankStatementFilter) : Promise<ResponseDTO<BankStatement>>{
-        let response = fetch(`${baseUrl}/${id}/movements?initialDate=${filter.initialDate.toDateString()}&finalDate=${filter.finalDate.toDateString()}`, {
+        let response = fetch(`${this.baseUrl}/${id}/movements?initialDate=${filter.initialDate.toDateString()}&finalDate=${filter.finalDate.toDateString()}`, {
             headers: this.defaultHeaders
         });
 
@@ -109,7 +111,7 @@ export class BankAccountService {
     }
 
     public createCharge(bankAccountId: number, chargeDTO: ChargeDTO) : Promise<ResponseDTO<ChargeDTO> | string | string[]>{
-        let response = fetch(`${baseUrl}/${bankAccountId}/charge`,{
+        let response = fetch(`${this.baseUrl}/${bankAccountId}/charge`,{
             method: "POST",
             headers: this.defaultHeaders,
             body: JSON.stringify(chargeDTO)
@@ -129,7 +131,7 @@ export class BankAccountService {
             query = "?"+queryParams.toString();
         }
         
-        const uri = `${baseUrl}/${id}/charges${query}`;
+        const uri = `${this.baseUrl}/${id}/charges${query}`;
         let response = fetch(`${uri}`, {
             headers: this.defaultHeaders
         });
@@ -138,7 +140,7 @@ export class BankAccountService {
     }
 
     public getChargeById(id: number, chargeId: string) : Promise<ResponseDTO<ChargeDTO>>{
-        let response = fetch(`${baseUrl}/${id}/charges/${chargeId}`, {
+        let response = fetch(`${this.baseUrl}/${id}/charges/${chargeId}`, {
             headers: this.defaultHeaders
         });
 
@@ -146,7 +148,7 @@ export class BankAccountService {
     }
 
     public cancelCharge(bankAccountDTO: BankAccountDTO, chargeId: string) : Promise<ResponseDTO<boolean> | string[]>{
-        let response = fetch(`${baseUrl}/${bankAccountDTO.id}/charges/${chargeId}`,{
+        let response = fetch(`${this.baseUrl}/${bankAccountDTO.id}/charges/${chargeId}`,{
             method: "DELETE",
             headers: this.defaultHeaders
         })
@@ -155,7 +157,7 @@ export class BankAccountService {
     }
 
     public getBalance(id: number) : Promise<ResponseDTO<CelcashBalanceResponseDto>>{
-        let response = fetch(`${baseUrl}/${id}/balance`, {
+        let response = fetch(`${this.baseUrl}/${id}/balance`, {
             headers: this.defaultHeaders
         });
 
@@ -163,7 +165,7 @@ export class BankAccountService {
     }
 
     public createPayment(bankAccountId: number, paymentRequest: CelcashPaymentRequestDto) : Promise<ResponseDTO<object> | string | string[]>{
-        let response = fetch(`${baseUrl}/${bankAccountId}/payment`,{
+        let response = fetch(`${this.baseUrl}/${bankAccountId}/payment`,{
             method: "POST",
             headers: this.defaultHeaders,
             body: JSON.stringify(paymentRequest)
@@ -173,7 +175,7 @@ export class BankAccountService {
     }
 
     public getChargesSumByDate(bankAccountId: number) : Promise<ResponseDTO<ChargesSumByDate> | string | string[]>{
-        let response = fetch(`${baseUrl}/${bankAccountId}/charges/sumByDate`,{
+        let response = fetch(`${this.baseUrl}/${bankAccountId}/charges/sumByDate`,{
             method: "GET",
             headers: this.defaultHeaders
         })
@@ -182,7 +184,7 @@ export class BankAccountService {
     }
 
     public getChargesSumWeekly(bankAccountId: number) : Promise<ResponseDTO<ChargesSumByDate> | string | string[]>{
-        let response = fetch(`${baseUrl}/${bankAccountId}/charges/sumWeekly`,{
+        let response = fetch(`${this.baseUrl}/${bankAccountId}/charges/sumWeekly`,{
             method: "GET",
             headers: this.defaultHeaders
         })

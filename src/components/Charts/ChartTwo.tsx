@@ -89,7 +89,7 @@ const ChartTwo: React.FC = () => {
           // setError(response.errors.join(','));
       }
       else{
-        const graphicPoints = Object.values(response.data);
+        const graphicPoints = Object.values(response.data).map(v => v / 100);
         const max = Math.max(...graphicPoints);
 
         options.yaxis = {

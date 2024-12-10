@@ -143,7 +143,7 @@ const ChartOne: React.FC = () => {
           // setError(response.errors.join(','));
       }
       else{
-        const graphicPoints = Object.values(response.data)//?.map(c => c.value);
+        const graphicPoints = Object.values(response.data).map(v => v / 100)//?.map(c => c.value);
         const graphicCategories = Object.keys(response.data)//?.map(c => c.key);
         const max = Math.max(...graphicPoints);
         options.yaxis = {
