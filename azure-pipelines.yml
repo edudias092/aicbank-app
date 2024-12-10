@@ -9,7 +9,7 @@ pool:
 variables:
   vite_build_dir: 'dist' # Diretório de saída padrão do Vite
   server_user: 'root'
-  server_host: ${{ variables.server_host }}
+  server_host: $(server_host)
   server_path: '/sistemas/aicbank/webapp'
 
 steps:
