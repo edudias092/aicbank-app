@@ -6,7 +6,7 @@ import { SigninImg } from '../../components/Drawings/AuthDrawings';
 import { CadeadoIcon, EmailIcon, GoogleIcon } from '../../components/Icons/Icons';
 import { getUserToken, saveUserToken, tokenIsExpired } from '../../common/utilities/authFunctions';
 import { useForm } from 'react-hook-form';
-import { Login, Registro } from '../../common/services/AuthService';
+import { Registro } from '../../common/services/AuthService';
 import { UserToken } from '../../types/userToken';
 import { ErrorAlert } from '../../components/Alerts';
 

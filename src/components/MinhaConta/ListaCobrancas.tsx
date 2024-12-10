@@ -110,7 +110,7 @@ export const ListaCobranças = () => {
                 const result = await bankAccountService.cancelCharge(bankAccountCtx?.bankAccount, cancelCharge.myId);
                 
                 if(result){
-                    setCharges(charges?.filter(c => c.myId !== cancelCharge.myId));
+                    // setCharges(charges?.filter(c => c.myId !== cancelCharge.myId));
                     setCancelCharge(undefined);
                     setShowModal(false);
                 }

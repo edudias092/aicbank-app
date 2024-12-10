@@ -5,10 +5,11 @@ import { ContaContext } from "../../contexts/ContaContextProvider";
 import { getAccountUserEmail, getAccountUserId, tokenIsExpired } from "../../common/utilities/authFunctions";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorAlert } from "../Alerts";
-import { ChargeDTO } from "../../types/charge";
+import { ChargeDTO, getStatusName } from "../../types/charge";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { CustomerDTO } from "../../types/customer";
 import { StatusBankAccount } from "../../types/bankaccount";
+import { CustomModal } from "../../common/components/CustomModal";
 
 export const DetalheCobranca = () => {
 
@@ -17,6 +18,7 @@ export const DetalheCobranca = () => {
     const [sendingToApi, setSendingToApi] = useState(false);
     const [error, setError] = useState<string>();
     const [charge, setCharge] = useState<ChargeDTO>();
+    const [showModal, setShowModal] = useState(false);
 
     const navigate = useNavigate();
 
@@ -69,6 +71,26 @@ export const DetalheCobranca = () => {
         
         if(shouldRedirect){
           navigate("/conta")
+        }
+    }
+
+    const confirmCancelCharge = async () => {
+        if(bankAccountCtx?.bankAccount && charge){
+            setSendingToApi(s => s = true);
+            
+            try{
+
+                const result = await bankAccountService.cancelCharge(bankAccountCtx?.bankAccount, charge.myId);
+                
+                if(result){
+                    setShowModal(false);
+                }
+            }
+            catch(e) {
+                console.log(e);
+            }
+
+            setSendingToApi(s => s = false);
         }
     }
 
@@ -143,6 +165,12 @@ export const DetalheCobranca = () => {
         return "-";
     }
 
+    const showCancelDialog = () => {
+        if(charge){
+            setShowModal(true);
+        }
+    }
+
     return <>
         <Breadcrumb pageName={`Detalhe Cobrança`} parent="Cobranças" parentRoute="/cobrancas" />
 
@@ -185,6 +213,18 @@ export const DetalheCobranca = () => {
                         >
                             <option value="boleto">Boleto</option>
                         </select>
+                    </div>
+                    <div className="w-full xl:w-1/2">
+                        <label className="mb-2.5 block text-black dark:text-white">
+                            Status:
+                        </label>
+                        <input
+                            value={getStatusName(charge?.status ?? "")}
+                            type="text"
+                            placeholder=""
+                            disabled
+                            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
                     </div>
                 </div>
                 <fieldset>
@@ -249,7 +289,7 @@ export const DetalheCobranca = () => {
                 <div className="mb-4 5">
                     <div className="flex items-center">
                         <button className="flex w-1/3 justify-center rounded bg-primary p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
-                            disabled={sendingToApi} onClick={() => viewBoleto()}
+                            disabled={sendingToApi || charge?.status == "canceled"} onClick={() => viewBoleto()}
                         >
                             {sendingToApi 
                                 ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>
@@ -257,7 +297,7 @@ export const DetalheCobranca = () => {
                             }
                         </button>
                         <button className="flex w-1/3 justify-center rounded bg-primary p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
-                            disabled={sendingToApi} onClick={() => viewFatura()}
+                            disabled={sendingToApi || charge?.status == "canceled"} onClick={() => viewFatura()}
                         >
                             {sendingToApi 
                                 ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>
@@ -265,7 +305,8 @@ export const DetalheCobranca = () => {
                             }
                         </button>
                         <button className="flex w-1/3 justify-center rounded bg-danger p-3 font-medium text-gray mx-2 hover:bg-opacity-90"
-                            disabled={sendingToApi} 
+                            disabled={sendingToApi || charge?.status == "canceled" } 
+                            onClick={showCancelDialog}
                         >
                             {sendingToApi 
                                 ? <span className="h-6 w-6 animate-spin rounded-full border-4 border-solid border-white border-t-transparent"></span>
@@ -281,5 +322,14 @@ export const DetalheCobranca = () => {
                 </div>
             </div>
         </div>
+        {showModal && 
+        <CustomModal title="Cancelar Cobrança" onRequestClose={() => setShowModal(false)} onConfirm={confirmCancelCharge}>
+            <p className="text-xl mt-6">Confirma o cancelamento da cobrança?</p>
+            <div className="mt-1">
+                <b>Nome:</b> {charge?.Customer.name}<br/>
+                <b>Valor:</b> {getActualValue(charge?.value)}<br/>
+                <b>Data de Vencimento:</b> {getPayDay(charge)}
+            </div>
+        </CustomModal>}
     </>
 }
