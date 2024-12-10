@@ -9,10 +9,12 @@ pool:
 variables:
   vite_build_dir: 'dist' # Diretório de saída padrão do Vite
   server_user: 'root'
-  server_host: $(server_host)
+  server_host: $(vps_host_url)
   server_path: '/sistemas/aicbank/webapp'
 
 steps:
+  - script: echo "$(vps_host_url)"
+  - script: echo "$(server_host)"
   # 1. Instalar dependências
   - task: NodeTool@0
     inputs:
