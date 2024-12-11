@@ -34,7 +34,9 @@ export const FormCadastro = ({readonly = false}: FormCadastroProps) => {
 
             data.type = parseInt(data.type.toString());
 
-            result = await bankAccountService.createAccount(data);       
+            result = bankAccountCtx?.bankAccount?.id == undefined
+                ? await bankAccountService.createAccount(data)
+                : await bankAccountService.updateAccount(data)
 
             const response = result as ResponseDTO<BankAccountDTO>
             
