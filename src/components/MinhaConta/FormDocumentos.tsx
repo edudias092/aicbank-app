@@ -16,8 +16,8 @@ export const FormDocumentos = () => {
     const { register, setValue, formState: {errors, isValid}, handleSubmit, watch  } = useForm<MandatoryDocumentsDTO>();
     const bankAccountService = new BankAccountService();
     const bankAccountCtx = useContext(ContaContext);
-    const [_, setShowCalendar] = useState(false);
-    const [_, setSelectingDate] = useState(false);
+    const [, setShowCalendar] = useState(false);
+    const [, setSelectingDate] = useState(false);
 
     const updateAccount = async (data: MandatoryDocumentsDTO) => {
         if(isValid){
