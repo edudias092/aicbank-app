@@ -37,6 +37,8 @@ export const FormDocumentos = () => {
 
                 setSendingToApi(() => false);
             }
+        }else{
+            console.log(errors);
         }
     }
 
