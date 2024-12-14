@@ -3,10 +3,9 @@ import { useForm } from "react-hook-form";
 import { ErrorAlert } from "../Alerts";
 import { MandatoryDocumentsDTO, MandatoryDocumentType } from "../../types/mandatoryDocuments";
 import { ResponseDTO } from "../../types/ResponseDTO";
-import { BankAccountDTO, TypeBankAccount } from "../../types/bankaccount";
+import { BankAccountDTO } from "../../types/bankaccount";
 import { BankAccountService } from "../../common/services/BankAccountService";
 import { ContaContext } from "../../contexts/ContaContextProvider";
-import { DayPicker } from "react-day-picker";
 import { IMaskInput } from "react-imask";
 import { Calendar } from "primereact/calendar";
 
@@ -17,8 +16,8 @@ export const FormDocumentos = () => {
     const { register, setValue, formState: {errors, isValid}, handleSubmit, watch  } = useForm<MandatoryDocumentsDTO>();
     const bankAccountService = new BankAccountService();
     const bankAccountCtx = useContext(ContaContext);
-    const [showCalendar, setShowCalendar] = useState(false);
-    const [selectingDate, setSelectingDate] = useState(false);
+    const [_, setShowCalendar] = useState(false);
+    const [_, setSelectingDate] = useState(false);
 
     const updateAccount = async (data: MandatoryDocumentsDTO) => {
         if(isValid){
@@ -107,7 +106,7 @@ export const FormDocumentos = () => {
                                     value={watch("birthDate")}
                                     {...register('birthDate', {required: true})} 
                                 />
-                                {errors.birthDateString && <span className="text-red-500">Data de Nascimento é obrigatório.</span>}
+                                {errors.birthDate && <span className="text-red-500">Data de Nascimento é obrigatório.</span>}
                             </div>
                         </div>
                         <div className="w-full xl:w-1/2">
