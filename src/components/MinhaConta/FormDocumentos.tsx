@@ -20,6 +20,7 @@ export const FormDocumentos = () => {
     const [, setSelectingDate] = useState(false);
 
     const updateAccount = async (data: MandatoryDocumentsDTO) => {
+        console.log(data, errors, isValid);
         if(isValid){
             if(bankAccountCtx?.bankAccount && bankAccountCtx.bankAccount.id != 0){
                 setSendingToApi(() => true);
@@ -37,6 +38,8 @@ export const FormDocumentos = () => {
 
                 setSendingToApi(() => false);
             }
+        }else{
+            console.log(errors);
         }
     }
 
