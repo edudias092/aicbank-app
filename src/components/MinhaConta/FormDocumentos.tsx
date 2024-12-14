@@ -16,15 +16,11 @@ export const FormDocumentos = () => {
     const { register, setValue, formState: {errors, isValid}, handleSubmit, watch  } = useForm<MandatoryDocumentsDTO>();
     const bankAccountService = new BankAccountService();
     const bankAccountCtx = useContext(ContaContext);
-    const [, setShowCalendar] = useState(false);
-    const [, setSelectingDate] = useState(false);
 
     const updateAccount = async (data: MandatoryDocumentsDTO) => {
-        console.log(data, errors, isValid);
         if(isValid){
             if(bankAccountCtx?.bankAccount && bankAccountCtx.bankAccount.id != 0){
                 setSendingToApi(() => true);
-                debugger;
 
                 let result = await bankAccountService.sendMandatoryDocuments(bankAccountCtx.bankAccount.id, data);
     
@@ -43,18 +39,7 @@ export const FormDocumentos = () => {
         }
     }
 
-    const handleCalendar = (newDate: Date) : void => {
-        
-        setValue("birthDate", newDate); 
-        setValue("birthDateString", newDate.toLocaleDateString()); 
-        
-        setShowCalendar(false);
-        setSelectingDate(false);
-    }
-
-    return <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
-        // onClick={_ => { if(showCalendar) setShowCalendar(false) }}
-    >
+    return <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">
                 2. Envio dos Documentos
@@ -97,11 +82,6 @@ export const FormDocumentos = () => {
                                 <label className="mb-2.5 block text-black dark:text-white">
                                     Data de Nascimento:
                                 </label>
-                                <input type="hidden" 
-                                    value={watch("birthDateString")}
-                                    {...register('birthDateString', {required: true})} 
-                                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                />
                                 <Calendar
                                     dateFormat="dd/mm/yy"
                                     locale="pt"
@@ -314,7 +294,8 @@ export const FormDocumentos = () => {
                         <ErrorAlert message={apiError.join(',')} action={() => setApiError([])} />
                     }
                 </div>
-                <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+                <button type="submit"
+                className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
                     disabled={sendingToApi}    
                 >
                     {sendingToApi 
