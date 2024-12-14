@@ -19,6 +19,8 @@ export const FormDocumentos = () => {
 
     const updateAccount = async (data: MandatoryDocumentsDTO) => {
         if(isValid){
+            data.monthlyIncome = parseInt((data.monthlyIncome * 100).toFixed(2))
+            
             if(bankAccountCtx?.bankAccount && bankAccountCtx.bankAccount.id != 0){
                 setSendingToApi(() => true);
 
@@ -130,7 +132,7 @@ export const FormDocumentos = () => {
                             <label className="mb-2.5 block text-black dark:text-white">
                                 Renda Mensal
                             </label>
-                            <input 
+                            <input type="number" step="0.01" min="0"
                                 value={watch("monthlyIncome")?.toString()}
                                 {...register("monthlyIncome", {required: true})}
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
