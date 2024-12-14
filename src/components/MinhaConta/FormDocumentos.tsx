@@ -210,6 +210,7 @@ export const FormDocumentos = () => {
                             placeholder=""
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
+                        {errors.selfie && <span className="text-red-500">Campo obrigatório.</span>}
                     </div>
                     <div className="mb-4.5">
                         <label className="mb-2.5 block text-black dark:text-white">
@@ -221,6 +222,7 @@ export const FormDocumentos = () => {
                             placeholder=""
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
+                        {errors.front && <span className="text-red-500">Campo obrigatório.</span>}
                     </div>
                     <div className="mb-4.5">
                         <label className="mb-2.5 block text-black dark:text-white">
@@ -232,6 +234,7 @@ export const FormDocumentos = () => {
                             placeholder=""
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
+                        {errors.back && <span className="text-red-500">Campo obrigatório.</span>}
                     </div>
                     <div className="mb-4.5">
                         <label className="mb-2.5 block text-black dark:text-white">
@@ -243,6 +246,7 @@ export const FormDocumentos = () => {
                             placeholder=""
                             className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
+                        {errors.address && <span className="text-red-500">Campo obrigatório.</span>}
                     </div>
                 </fieldset>
                 <fieldset>
@@ -255,10 +259,11 @@ export const FormDocumentos = () => {
                             </label>
                             <input
                                 type="file"
-                                {...register("lastContract", {required: true})}
+                                {...register("lastContract", {required: (bankAccountCtx?.bankAccount?.typeCompany == "ltda" || bankAccountCtx?.bankAccount?.typeCompany == "eireli" || bankAccountCtx?.bankAccount?.typeCompany == "slu")})}
                                 placeholder=""
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             />
+                            {errors.lastContract && <span className="text-red-500">Campo obrigatório.</span>}
                         </div>
                     }
                     {(bankAccountCtx?.bankAccount?.typeCompany == "individualEntrepreneur" || bankAccountCtx?.bankAccount?.typeCompany == "mei") &&
@@ -268,10 +273,11 @@ export const FormDocumentos = () => {
                             </label>
                             <input
                                 type="file"
-                                {...register("cnpjCard", {required: true})}
+                                {...register("cnpjCard", {required: (bankAccountCtx?.bankAccount?.typeCompany == "individualEntrepreneur" || bankAccountCtx?.bankAccount?.typeCompany == "mei")})}
                                 placeholder=""
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             />
+                            {errors.cnpjCard && <span className="text-red-500">Campo obrigatório.</span>}
                         </div>
                     }
                     {(bankAccountCtx?.bankAccount?.typeCompany == "association" || bankAccountCtx?.bankAccount?.typeCompany == "sa") &&
@@ -281,10 +287,11 @@ export const FormDocumentos = () => {
                             </label>
                             <input
                                 type="file"
-                                {...register("electionRecord", {required: true})}
+                                {...register("electionRecord", {required: (bankAccountCtx?.bankAccount?.typeCompany == "association" || bankAccountCtx?.bankAccount?.typeCompany == "sa")})}
                                 placeholder=""
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             />
+                            {errors.electionRecord && <span className="text-red-500">Campo obrigatório.</span>}
                         </div>
                     }
                     {(bankAccountCtx?.bankAccount?.typeCompany == "association" || bankAccountCtx?.bankAccount?.typeCompany == "sa") &&
@@ -294,10 +301,11 @@ export const FormDocumentos = () => {
                             </label>
                             <input
                                 type="file"
-                                {...register("statute", {required: true})}
+                                {...register("statute", {required: (bankAccountCtx?.bankAccount?.typeCompany == "association" || bankAccountCtx?.bankAccount?.typeCompany == "sa")})}
                                 placeholder=""
                                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             />
+                            {errors.statute && <span className="text-red-500">Campo obrigatório.</span>}
                         </div>
                     }
                 </fieldset>
