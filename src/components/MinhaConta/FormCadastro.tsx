@@ -192,7 +192,7 @@ export const FormCadastro = ({readonly = false}: FormCadastroProps) => {
                         </label>
                         <input
                             type="email"
-                            { ...register("emailContact", {required: true, pattern:/^[a-z0-9\.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/g})}
+                            { ...register("emailContact", {required: true})}
                             placeholder=""
                             readOnly
                             value={email}
