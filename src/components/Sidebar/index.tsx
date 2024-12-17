@@ -4,6 +4,7 @@ import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../images/logo/logo.png';
 import { CalculadoraIcon, ConfigIcon, ContaIcon } from '../Icons/Icons';
 import { BiChevronDown, BiDollar, BiFileBlank, BiMoney, BiSolidDashboard, BiSolidUserAccount } from 'react-icons/bi';
+import { isAdmin } from '../../common/utilities/authFunctions';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -246,6 +247,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             open && 'rotate-180'
                           }`}/>
                       </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          {isAdmin() && 
+                            <li>
+                              <NavLink
+                                to="/config/subcontas"
+                                className={({ isActive }) =>
+                                  'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                  (isActive && '!text-white')
+                                }
+                              >
+                                Subcontas
+                              </NavLink>
+                            </li>
+                          }
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
                   );
                 }}

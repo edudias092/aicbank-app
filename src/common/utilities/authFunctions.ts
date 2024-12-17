@@ -1,5 +1,10 @@
 import { UserToken } from "../../types/userToken";
 
+const ClaimTypes = {
+    AccountUserId : "AccountUserId",
+    Role: "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+}
+
 export const saveUserToken = (userToken: UserToken) => {
     sessionStorage.setItem("token", JSON.stringify(userToken));
 }
@@ -18,7 +23,7 @@ export const getAccountUserId = () : number | null => {
     const userToken = getUserToken();
 
     if(userToken){
-        const accountUserClaim = userToken.claims.find(c => c.type == "AccountUserId")
+        const accountUserClaim = userToken.claims.find(c => c.type == ClaimTypes.AccountUserId)
 
         return parseInt(accountUserClaim?.value ?? "");
     }
@@ -51,4 +56,16 @@ export const getAccountUserEmail = () : string | null => {
 
 export const logout = () : void => {
     sessionStorage.removeItem("token");
+}
+
+export const userHasRole = (roleName: string): boolean => {
+    const userToken = getUserToken();
+
+    if(!userToken) return false;
+
+    return userToken.claims.some(x => x.type == ClaimTypes.Role && x.value.toLowerCase() == roleName.toLowerCase())
+}
+
+export const isAdmin = (): boolean => {
+    return userHasRole("Admin");
 }

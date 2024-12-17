@@ -1,5 +1,5 @@
 import { BankStatementFilter } from "../../components/MinhaConta/Extrato";
-import { BankChargeFilter } from "../../components/MinhaConta/ListaCobrancas";
+import { BankChargeFilter } from "../../components/Cobrancas/ListaCobrancas";
 import { BankAccountDTO } from "../../types/bankaccount";
 import { BankStatement } from "../../types/bankStatement";
 import { CelcashPaymentRequestDto } from "../../types/celcashPaymentRequestDto";

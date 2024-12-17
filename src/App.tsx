@@ -11,13 +11,14 @@ import { Resumo } from './components/MinhaConta/Resumo';
 import { ContaContextProvider } from './contexts/ContaContextProvider';
 import "react-day-picker/style.css";
 import { Extrato } from './components/MinhaConta/Extrato';
-import { CobrancaBoleto } from './components/MinhaConta/CobrancaBoleto';
-import { DetalheCobranca } from './components/MinhaConta/DetalheCobranca';
-import { ListaCobranças } from './components/MinhaConta/ListaCobrancas';
+import { CobrancaBoleto } from './components/Cobrancas/CobrancaBoleto';
+import { DetalheCobranca } from './components/Cobrancas/DetalheCobranca';
+import { ListaCobranças } from './components/Cobrancas/ListaCobrancas';
 import { NovaTransferencia } from './components/MinhaConta/NovaTransferencia';
 import { addLocale } from 'primereact/api';
 import 'primereact/resources/themes/saga-blue/theme.css'; // Ou outro tema de sua escolha
 import 'primereact/resources/primereact.min.css'; // Estilos gerais do PrimeReact
+import { Subcontas } from './components/Configuracoes/Subcontas';
 
 addLocale('pt', {
   firstDayOfWeek: 1,
@@ -94,6 +95,13 @@ function App() {
             <>
                 <PageTitle title="Nova Transferência / Pix | AIC Bank" />
                 <NovaTransferencia />
+              </>
+            }
+            />
+            <Route path="/config/subcontas" element={
+            <>
+                <PageTitle title="Subcontas" />
+                <Subcontas />
               </>
             }
             />
