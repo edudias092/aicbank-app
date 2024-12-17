@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ConfigService } from "../../common/services/ConfigService";
-import { BankAccountDTO } from "../../types/bankaccount";
 import Breadcrumb from "../Breadcrumbs/Breadcrumb";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { useNavigate } from "react-router-dom";
 import { isAdmin } from "../../common/utilities/authFunctions";
+import { CelcashBankAccountDto } from "../../types/celcashBankAccountDto";
+import { OverlayPanel } from "primereact/overlaypanel";
 
 export const Subcontas = () => {
     const navigate = useNavigate();
@@ -13,7 +14,9 @@ export const Subcontas = () => {
     const configService = new ConfigService();
 
     const [sendingToApi, setSendingToApi] = useState(false);
-    const [bankAccounts, setBankAccounts] = useState<BankAccountDTO[]>();
+    const [bankAccounts, setBankAccounts] = useState<CelcashBankAccountDto[]>();
+    const op = useRef(null);    
+    const [selectedBankAccount, setSelectedBankAccount] = useState<CelcashBankAccountDto>();
 
     const getContas = async () => {
         setSendingToApi(s => s = true);
@@ -49,12 +52,18 @@ export const Subcontas = () => {
     
     const getSubAccountStatus = (status: "approved" | "denied" | "pending" | "analyzing" | "empty") => {
         switch(status){
-            case "approved": return "Aprovada"
-            case "denied": return "Negada"
-            case "pending": return "Pendente"
-            case "analyzing": return "Analisando"
+            case "approved": return <span className="text-success">Aprovada</span>
+            case "denied": return <span className="text-danger">Negada</span>
+            case "pending": return <span className="text-warning">Pendente</span>
+            case "analyzing": return <span className="text-primary">Analisando</span>
             case "empty": return "Vazia"
-            default: return status
+        }
+    }
+
+    const mostrarOverlayPanel = (e: any, selectedBankAccount: CelcashBankAccountDto) =>  {
+        setSelectedBankAccount(selectedBankAccount);
+        if(op?.current){
+            (op.current as any).toggle(e);
         }
     }
 
@@ -65,7 +74,14 @@ export const Subcontas = () => {
             <div className="card p-2">
                 <DataTable value={bankAccounts} tableStyle={{ minWidth: '50rem' }} size='small' loading={sendingToApi}
                 emptyMessage='Nenhum registro encontrado'>
-                    <Column field="Verification.status" header="Status" body={(status) => getSubAccountStatus(status)} sortable></Column>
+                    <Column field="Verification.status" header="Status" body={(b) => getSubAccountStatus(b.Verification.status)} sortable></Column>
+                    <Column field="" header="Razões Status" body={b => {
+                        return <>{ (b as CelcashBankAccountDto).Verification?.reasons?.length > 0 
+                            ? <button className="rounded bg-success py-1 px-4 font-medium text-gray hover:bg-opacity-90" 
+                                        type="button" onClick={e => mostrarOverlayPanel(e, b)}>Ver</button>
+                            : "-"
+                        }</>
+                    }}sortable></Column>
                     <Column field="name" header="Nome" style={{ width: '10%'}} sortable></Column>
                     <Column field="document" header="CPF/CNPJ" sortable ></Column>
                     <Column field="emailContact" header="E-mail" sortable ></Column>
@@ -73,6 +89,15 @@ export const Subcontas = () => {
                     <Column field="ApiAuth.galaxHash" header="GalaxHash" sortable ></Column>
                 </DataTable>
             </div>
+            
+            <OverlayPanel ref={op} showCloseIcon closeOnEscape dismissable={false} style={{maxWidth: "25%"}}>
+                <ul className="p-2 text-sm
+                ">
+                    {selectedBankAccount?.Verification?.reasons?.map((reason, i) => {
+                        return <li className="list-disc m-1" key={i}>{reason}</li>
+                    })}
+                </ul>
+            </OverlayPanel>
         </div>
     </>
 }

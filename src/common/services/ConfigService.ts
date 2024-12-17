@@ -1,5 +1,5 @@
 import apiConfig from "../../config/apiConfig";
-import { BankAccountDTO } from "../../types/bankaccount";
+import { CelcashBankAccountDto } from "../../types/celcashBankAccountDto";
 import { ResponseDTO } from "../../types/ResponseDTO";
 import { getUserToken } from "../utilities/authFunctions";
 
@@ -15,7 +15,7 @@ export class ConfigService {
         }   
     }
 
-    public getSubAccounts() : Promise<ResponseDTO<BankAccountDTO[]>>{
+    public getSubAccounts() : Promise<ResponseDTO<CelcashBankAccountDto[]>>{
         let response = fetch(`${this.baseUrl}/subaccounts`, {
             headers: this.defaultHeaders
         });
