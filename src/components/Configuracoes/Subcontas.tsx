@@ -54,6 +54,7 @@ export const Subcontas = () => {
             case "pending": return "Pendente"
             case "analyzing": return "Analisando"
             case "empty": return "Vazia"
+            default: return status
         }
     }
 
@@ -64,12 +65,12 @@ export const Subcontas = () => {
             <div className="card p-2">
                 <DataTable value={bankAccounts} tableStyle={{ minWidth: '50rem' }} size='small' loading={sendingToApi}
                 emptyMessage='Nenhum registro encontrado'>
+                    <Column field="Verification.status" header="Status" body={(status) => getSubAccountStatus(status)} sortable></Column>
                     <Column field="name" header="Nome" style={{ width: '10%'}} sortable></Column>
                     <Column field="document" header="CPF/CNPJ" sortable ></Column>
                     <Column field="emailContact" header="E-mail" sortable ></Column>
                     <Column field="ApiAuth.galaxId" header="GalaxId" sortable ></Column>
                     <Column field="ApiAuth.galaxHash" header="GalaxHash" sortable ></Column>
-                    <Column field="Verification.status" header="Status" body={(status) => getSubAccountStatus(status)} sortable></Column>
                 </DataTable>
             </div>
         </div>
