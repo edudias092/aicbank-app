@@ -84,16 +84,16 @@ const ECommerce: React.FC = () => {
       :
       <>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-          <CardDataStats title="Saldo disponível da conta" total={balance?.enabled ? "R$ "+balance?.enabled.toLocaleString() : "R$ 0,00"} >
+          <CardDataStats title="Saldo disponível da conta" total={balance?.Balance?.enabled ? "R$ "+(balance?.Balance?.enabled / 100).toFixed(2).toLocaleString() : "R$ 0,00"} >
             <BiCheckSquare className='text-2xl text-success' />
           </CardDataStats>
-          <CardDataStats title="Saldo em trânsito" total={balance?.requested ? "R$ "+balance?.requested.toLocaleString() : "R$ 0,00"} >
+          <CardDataStats title="Saldo em trânsito" total={balance?.Balance?.requested ? "R$ "+(balance?.Balance?.requested / 100).toFixed(2).toLocaleString() : "R$ 0,00"} >
           <BiRefresh className='text-2xl text-primary' />
           </CardDataStats>
-          <CardDataStats title="Saldo à receber de boleto" total={balance?.blockedBoleto ? "R$ "+balance?.blockedBoleto.toLocaleString() : "R$ 0,00"} >
+          <CardDataStats title="Saldo à receber de boleto" total={balance?.Balance?.blockedBoleto ? "R$ "+(balance?.Balance?.blockedBoleto / 100).toFixed(2).toLocaleString() : "R$ 0,00"} >
             <BiCalendarPlus className='text-2xl text-warning' />
           </CardDataStats>
-          <CardDataStats title="Saldo à receber de cartão" total={balance?.blockedCard ? "R$ "+balance?.blockedCard.toLocaleString() : "R$ 0,00"} >
+          <CardDataStats title="Saldo à receber de cartão" total={balance?.Balance?.blockedCard ? "R$ "+(balance?.Balance?.blockedCard / 100).toFixed(2).toLocaleString() : "R$ 0,00"} >
             <BiCalendarPlus className='text-2xl text-danger' />
           </CardDataStats>
         </div>
