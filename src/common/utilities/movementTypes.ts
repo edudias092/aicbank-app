@@ -21,7 +21,7 @@ groupPaymentTypes.set("withdraw", "Saque/Transferências");
 groupPaymentTypes.set("billPayment", "Pagamento de conta");
 
 export const getGroupPaymentTypes = (key: string): string | undefined => {
-    return groupPaymentTypes.get(key) ?? key.includes("credit") ? "Crédito" : "Débito";
+    return groupPaymentTypes.get(key) ?? key;
 }
 
 const paymentTypes = new Map();
@@ -79,5 +79,5 @@ paymentTypes.set("creditReceivedEnabled", "Crédito para Devolução Pix Recebid
 paymentTypes.set("debitEnabled", "Débito para Devolução Pix Enviada via MED (Mecanismo Especial de Devolução)");
 
 export const getPaymentTypes = (key: string): string | undefined => {
-    return paymentTypes.get(key) ?? key.includes("credit") ? "Crédito" : "Débito";
+    return paymentTypes.get(key) ?? key;
 }

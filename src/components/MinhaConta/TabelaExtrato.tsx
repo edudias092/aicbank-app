@@ -1,4 +1,7 @@
+import { DataTable } from 'primereact/datatable';
 import { BalanceDTO } from '../../types/bankStatement';
+import { Column } from 'primereact/column';
+import { getGroupPaymentTypes, getPaymentTypes } from '../../common/utilities/movementTypes';
 
 export type TabelaExtratoProps = {
   periodDescription: string,
@@ -15,54 +18,16 @@ export const TabelaExtrato = ({periodDescription, balances} : TabelaExtratoProps
         </h4>
       </div>
 
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-                <th scope="col" className="px-6 py-3">
-                  Data
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Descrição
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Valor
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Grupo Movimentação
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Tipo Movimentação
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-          {balances && balances.length > 0 ? balances?.map((balance, key) => (
-            <tr key={key}>
-              <td className="px-6 py-4">
-                {balance.createdAt.toLocaleString()}
-              </td>
-              <td className="px-6 py-4">
-                {balance.friendlyDescription}
-              </td>
-              <td className="px-6 py-4">
-                R$ {balance.value.toFixed(2)}
-              </td>
-              <td className="px-6 py-4">
-                {balance.groupPaymentType}
-              </td>
-              <td className="px-6 py-4">
-                {balance.paymentType}
-              </td>
-            </tr>
-          )):
-            <tr className="bg-white text-center text-lg border-t border-slate-100">
-                <td className="py-4" colSpan={6}>
-                  Nenhum registro encontrado
-                </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+      <DataTable value={balances} tableStyle={{ minWidth: '50rem' }} size='small' emptyMessage='Nenhum registro encontrado'>
+        {/* <Column field="createdAt" header="Data" body={(b) => (b.createdAt as Date).toLocaleDateString() } sortable style={{ width: '25%' }}></Column> */}
+        <Column field="createdAt" header="Data" sortable style={{ width: '25%' }}></Column>
+        <Column field="friendlyDescription" header="Descrição" sortable style={{ width: '25%' }}></Column>
+        <Column field="value" header="Valor" body={(b) => "R$ "+b.value.toFixed(2).toLocaleString()} sortable style={{ width: '25%' }}></Column>
+        <Column field="groupPaymentType" header="Grupo Movimentação" body={b => getPaymentTypes(b.groupPaymentType)} sortable style={{ width: '25%' }}></Column>
+        {/* <Column field="groupPaymentType" header="Grupo Movimentação" sortable style={{ width: '25%' }}></Column> */}
+        {/* <Column field="paymentType" header="Tipo Movimentação" sortable style={{ width: '25%' }}></Column> */}
+        <Column field="paymentType" header="Tipo Movimentação" body={b => getGroupPaymentTypes(b.paymentType)} sortable style={{ width: '25%' }}></Column>
+      </DataTable> 
     </div>
   );
 };

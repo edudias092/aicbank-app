@@ -39,8 +39,8 @@ export const Extrato = () => {
 
                 const result = await bankAccountService.getMovements(bankAccountCtx?.bankAccount?.id, data);
 
-                if(result.data?.balances && result.data.balances.length > 0){
-                    setBalances(result.data.balances);
+                if(result.data?.Balances && result.data.Balances.length > 0){
+                    setBalances(result.data.Balances);
                 }
 
                 setPeriodDescription(`${data.initialDateString} - ${data.finalDateString}`)

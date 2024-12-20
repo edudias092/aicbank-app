@@ -1,7 +1,7 @@
 export type BankStatement = {
     type: boolean,
-    balances: BalanceDTO[],
-    totals: TotalsDTO[]
+    Balances: BalanceDTO[],
+    Totals: TotalsDTO[]
 }
 
 export type BalanceDTO = {

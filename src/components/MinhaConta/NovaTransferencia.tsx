@@ -41,6 +41,7 @@ export const NovaTransferencia = () => {
                 else{
                     //todo: redirect to the right page.
                     //navigate(`/cobrancas/detalhe-cobranca/${response.data.myId}`);
+                    navigate("/conta")
                     return;
                 }
             }
@@ -52,7 +53,7 @@ export const NovaTransferencia = () => {
         }
     }
 
-    const [mask, setMask] = useState<string>();
+    const [mask, setMask] = useState<string | RegExp>();
     
     const getAccount = async (userId: number | null) => {
         if(!userId || !email || tokenIsExpired()){
@@ -90,7 +91,7 @@ export const NovaTransferencia = () => {
                 break
             case "email":
             case "random":
-                setMask(undefined)
+                setMask(/.*/)
         }
 
         setValue("key", "");
