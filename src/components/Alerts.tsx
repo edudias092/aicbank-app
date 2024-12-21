@@ -65,7 +65,7 @@ export const SuccessAlert = ({title = "Sucesso", message}: AlertProps) => {
 
 export const ErrorAlert = ({title = "Erro", message, action}: AlertProps) => {
     return (
-        <div onDoubleClick={(e) => action(e)} title="Duplo-clique para esconder"
+        <div onClick={(e) => action(e)} title="Duplo-clique para esconder"
             className="flex w-full cursor-pointer border-l-6 border-[#F87171] bg-[#F87171] bg-opacity-[15%] px-7 py-8 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
             <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#F87171]">
                 <button type="button" >

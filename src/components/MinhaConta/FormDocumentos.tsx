@@ -31,7 +31,13 @@ export const FormDocumentos = () => {
                 }
                 else {
                     const response = result as ResponseDTO<BankAccountDTO>
-                    bankAccountCtx.setBankAccount(response.data);
+                    
+                    if(result.success)
+                        bankAccountCtx.setBankAccount(response.data)
+                    
+                    if (response?.errors && response.errors.length > 0){
+                        setApiError(response.errors)
+                    }
                 }
 
                 setSendingToApi(() => false);

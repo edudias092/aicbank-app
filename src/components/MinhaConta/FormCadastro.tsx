@@ -41,11 +41,14 @@ export const FormCadastro = ({readonly = false}: FormCadastroProps) => {
             const response = result as ResponseDTO<BankAccountDTO>
             
             if(Array.isArray(response)){
-                console.log("Erros:", response);
                 setApiError(response as string[]);
             }
             else {
                 bankAccountCtx?.setBankAccount(response.data);
+
+                if(response.errors){
+                    setApiError(response.errors)
+                }
                 navigate("/conta")
             }
         }

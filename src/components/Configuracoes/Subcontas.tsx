@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { isAdmin } from "../../common/utilities/authFunctions";
 import { CelcashBankAccountDto } from "../../types/celcashBankAccountDto";
 import { OverlayPanel } from "primereact/overlaypanel";
+import { FilterMatchMode } from "primereact/api";
 
 export const Subcontas = () => {
     const navigate = useNavigate();
@@ -17,7 +18,14 @@ export const Subcontas = () => {
     const [bankAccounts, setBankAccounts] = useState<CelcashBankAccountDto[]>();
     const op = useRef(null);    
     const [selectedBankAccount, setSelectedBankAccount] = useState<CelcashBankAccountDto>();
-
+    const [filters, ] = useState({
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        "Verification.status": { value: null, matchMode: FilterMatchMode.CONTAINS },
+        name: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        document: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        emailContact: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        "ApiAuth.galaxId": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    });
     const getContas = async () => {
         setSendingToApi(s => s = true);
         
@@ -73,8 +81,9 @@ export const Subcontas = () => {
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark mt-2">
             <div className="card p-2">
                 <DataTable value={bankAccounts} tableStyle={{ minWidth: '50rem' }} size='small' loading={sendingToApi}
+                    paginator rows={10} dataKey="id" filters={filters} 
                 emptyMessage='Nenhum registro encontrado'>
-                    <Column field="Verification.status" header="Status" body={(b) => getSubAccountStatus(b.Verification.status)} sortable></Column>
+                    <Column field="Verification.status" filter filterPlaceholder="Pesquisar" header="Status" body={(b) => getSubAccountStatus(b.Verification.status)} sortable></Column>
                     <Column field="" header="Razões Status" body={b => {
                         return <>{ (b as CelcashBankAccountDto).Verification?.reasons?.length > 0 
                             ? <button className="rounded bg-success py-1 px-4 font-medium text-gray hover:bg-opacity-90" 
@@ -82,10 +91,10 @@ export const Subcontas = () => {
                             : "-"
                         }</>
                     }}sortable></Column>
-                    <Column field="name" header="Nome" style={{ width: '10%'}} sortable></Column>
-                    <Column field="document" header="CPF/CNPJ" sortable ></Column>
-                    <Column field="emailContact" header="E-mail" sortable ></Column>
-                    <Column field="ApiAuth.galaxId" header="GalaxId" sortable ></Column>
+                    <Column field="name" filter filterPlaceholder="Pesquisar" header="Nome" style={{ width: '10%'}} sortable></Column>
+                    <Column field="document" filter filterPlaceholder="Pesquisar"  header="CPF/CNPJ" sortable ></Column>
+                    <Column field="emailContact" filter filterPlaceholder="Pesquisar" header="E-mail" sortable ></Column>
+                    <Column field="ApiAuth.galaxId" filter filterPlaceholder="Pesquisar"  header="GalaxId" sortable ></Column>
                     <Column field="ApiAuth.galaxHash" header="GalaxHash" sortable ></Column>
                 </DataTable>
             </div>
