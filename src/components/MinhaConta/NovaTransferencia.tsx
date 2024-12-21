@@ -39,9 +39,7 @@ export const NovaTransferencia = () => {
                     setError(response.errors.join(','));
                 }
                 else{
-                    //todo: redirect to the right page.
-                    //navigate(`/cobrancas/detalhe-cobranca/${response.data.myId}`);
-                    navigate("/conta")
+                    navigate("/")
                     return;
                 }
             }
