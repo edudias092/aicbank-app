@@ -14,6 +14,7 @@ export type ChargeDTO = {
     status: string;
     Customer: CustomerDTO;
     Transactions: TransactionDTO[];
+    PaymentMethodBoleto: PaymentMethodBoleto;
   };
 
  export type PaymentMethods = 'creditcard' | 'boleto' | 'pix';
@@ -85,4 +86,11 @@ export const isDue = (charge: ChargeDTO | null | undefined) => {
   }
 
   return false;
+}
+
+export type PaymentMethodBoleto = {
+  fine?: number;
+  interest?: number;
+  instructions: string;
+  deadlineDays?: number;
 }

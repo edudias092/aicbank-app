@@ -33,8 +33,8 @@ export const CobrancaBoleto = () => {
             try{
                 data.mainPaymentMethodId = "boleto";
                 data.valueInDouble = parseFloat(data.valueInDouble.toString());
-                data.Customer.emails = [data.Customer.email];
-                data.Customer.phones = [data.Customer.phone];
+                data.Customer.emails = data.Customer.email ? [data.Customer.email] : [];
+                data.Customer.phones = data.Customer.phone ? [data.Customer.phone] : [];
                 const result = await bankAccountService.createCharge(bankAccountCtx?.bankAccount?.id, data);
 
                 const response = result as ResponseDTO<ChargeDTO>;
@@ -203,6 +203,18 @@ export const CobrancaBoleto = () => {
                                 />
                                 {errors.Customer?.email && <span className="text-red-500">Telefone/Celular inválido.</span>}
                             </div>
+                        </div>
+                        <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                            <label className="mb-2.5 block text-black dark:text-white">
+                                Instruções
+                            </label>
+                            <textarea
+                                { ...register("PaymentMethodBoleto.instructions")}
+                                placeholder=""
+                                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                            >
+                                {watch("PaymentMethodBoleto.instructions")}
+                            </textarea>
                         </div>
                         
                     </fieldset>
