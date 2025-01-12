@@ -5,7 +5,7 @@ import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-import ECommerce from './pages/Dashboard/ECommerce';
+import Home from './pages/Dashboard/Home';
 import DefaultLayout from './layout/DefaultLayout';
 import { Resumo } from './components/MinhaConta/Resumo';
 import { ContaContextProvider } from './contexts/ContaContextProvider';
@@ -59,7 +59,7 @@ function App() {
           <Route path="/" element={
             <>
                 <PageTitle title="Início | AIC Bank" />
-                <ECommerce />
+                <Home />
               </>
             }
             />

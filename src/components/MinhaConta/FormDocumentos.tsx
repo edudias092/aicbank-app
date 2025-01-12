@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorAlert } from "../Alerts";
 import { MandatoryDocumentsDTO, MandatoryDocumentType } from "../../types/mandatoryDocuments";
@@ -8,14 +8,15 @@ import { BankAccountService } from "../../common/services/BankAccountService";
 import { ContaContext } from "../../contexts/ContaContextProvider";
 import { IMaskInput } from "react-imask";
 import { Calendar } from "primereact/calendar";
+import { CardCollapse } from "../../common/components/CardCollapse";
 
 export const FormDocumentos = () => {
-
     const [apiError, setApiError] = useState<string[]>([]);
     const [sendingToApi, setSendingToApi] = useState(false);
-    const { register, setValue, formState: {errors, isValid}, handleSubmit, watch  } = useForm<MandatoryDocumentsDTO>();
+    const { register, setValue, formState: {errors, isValid}, handleSubmit, watch, reset, getValues } = useForm<MandatoryDocumentsDTO>();
     const bankAccountService = new BankAccountService();
     const bankAccountCtx = useContext(ContaContext);
+    const [mandatoryDocuments, setMandatoryDocuments] = useState<MandatoryDocumentsDTO>();
 
     const updateAccount = async (data: MandatoryDocumentsDTO) => {
         if(isValid){
@@ -47,13 +48,48 @@ export const FormDocumentos = () => {
         }
     }
 
+    const getMandatoryDocuments = async (bankAccountId: number | undefined) => {
+        
+        if(bankAccountId){
+            const formValue = getValues();
+            if(formValue.id == 0){
+                const response = await bankAccountService.getMandatoryDocumentsByBankAccountId(bankAccountId)
+                
+                if(response.data != null){
+                    reset(response.data)
+                    setValue("birthDate", new Date(response.data.birthDate))
+
+                    setMandatoryDocuments(response.data)
+                }
+            }
+        }
+    }
+    useEffect(() => {
+        getMandatoryDocuments(bankAccountCtx?.bankAccount?.id)
+            .then()
+            .catch(e => console.error(e))
+    },[bankAccountCtx?.bankAccount])
+
     return <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">
                 2. Envio dos Documentos
             </h3>
         </div>
+        {mandatoryDocuments?.reasonsStatus 
+            && mandatoryDocuments.reasonsStatus.length > 0 
+            && <div className="p-2">
+                    <CardCollapse title="Seu cadastro precisa ser ajustado. Clique para ver os motivos">
+                        <ul className="list-disc p-4">
+                            {mandatoryDocuments.reasonsStatus.map((reason,index) => 
+                                <li key={index}>{reason}</li>
+                            )}
+                        </ul>
+                    </CardCollapse>
+                </div>
+        }
         <form onSubmit={handleSubmit(updateAccount)}>
+            <input type="hidden" {...register("id", {required:false})} />
             <div className="p-6.5">
                 <fieldset>
                     <legend className="text-xl">Informações do Associado</legend>
@@ -95,7 +131,8 @@ export const FormDocumentos = () => {
                                     locale="pt"
                                     className="w-full rounded border-[1.5px] border-stroke py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                     value={watch("birthDate")}
-                                    {...register('birthDate', {required: true})} 
+                                    {...register('birthDate', {required: true})}
+                                    showIcon
                                 />
                                 {errors.birthDate && <span className="text-red-500">Data de Nascimento é obrigatório.</span>}
                             </div>

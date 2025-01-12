@@ -31,30 +31,37 @@ const SignIn = () => {
   });
 
   const enviarLogin = async (data: any) => {
-    if(!isValid) return;
-    setSendingToApi(() => true);
-
-    const response = await Login(data.email, data.password);
-
-    setSendingToApi(() => false);
-
-    if (!response.ok) {
-      if (response.status === 400) {
-        let result = await response.text();
-        setError(result);
-        return;
+    try{
+      if(!isValid) return;
+      setSendingToApi(() => true);
+  
+      const response = await Login(data.email, data.password);
+  
+      setSendingToApi(() => false);
+  
+      if (!response.ok) {
+        if (response.status === 400) {
+          let result = await response.text();
+          setError(result);
+          return;
+        }
+        if (response.status === 500) {
+          setError(await response.text());
+  
+          return;
+        }
       }
-      if (response.status === 500) {
-        setError(await response.text());
+  
+      let result = await response.json();
+      saveUserToken(result as UserToken);
+  
+      navigate("/")
 
-        return;
-      }
+    }catch(e){
+      setError("Ocorreu um erro inesperado.")
+      setSendingToApi(false);
+      console.log(e)
     }
-
-    let result = await response.json();
-    saveUserToken(result as UserToken);
-
-    navigate("/")
   }
 
   return (

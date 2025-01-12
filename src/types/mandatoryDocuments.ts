@@ -1,4 +1,5 @@
 export type MandatoryDocumentsDTO = {
+    id: number,
     motherName: string,
     birthDateString: string,
     birthDate: Date,
@@ -17,6 +18,8 @@ export type MandatoryDocumentsDTO = {
     associateDocument: string,
     associateType: "partner" | "attorney" | "personinvolved",
     associateName: string,
+    statusIntegration: string,
+    reasonsStatus: string[]
 }
 
 export enum MandatoryDocumentType {

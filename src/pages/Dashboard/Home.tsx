@@ -10,7 +10,7 @@ import { ContaContext } from '../../contexts/ContaContextProvider';
 import Loader from '../../common/Loader';
 import { StatusBankAccount } from '../../types/bankaccount';
 
-const ECommerce: React.FC = () => {
+const Home: React.FC = () => {
   const bankAccountService = new BankAccountService();
   const bankAccountCtx = useContext(ContaContext);
   
@@ -25,7 +25,7 @@ const ECommerce: React.FC = () => {
         navigate("/login");
         return;
     }
-    let shouldRedirect = false;
+    let shouldRedirect = true;
 
     if(bankAccountCtx != null && bankAccountCtx?.bankAccount == undefined){
         const response = await bankAccountService.getAccountByUserId(userId)
@@ -109,4 +109,4 @@ const ECommerce: React.FC = () => {
   );
 };
 
-export default ECommerce;
+export default Home;

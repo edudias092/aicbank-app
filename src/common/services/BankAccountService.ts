@@ -31,6 +31,14 @@ export class BankAccountService {
         return response.then(r => r.json());
     }
 
+    public getMandatoryDocumentsByBankAccountId(id: number) : Promise<ResponseDTO<MandatoryDocumentsDTO>>{
+        let response = fetch(`${this.baseUrl}/${id}/mandatoryDocuments`, {
+            headers: this.defaultHeaders
+        });
+
+        return response.then(r => r.json());
+    }
+
     public getAccountByUserId(id: number) : Promise<ResponseDTO<BankAccountDTO>>{
         let response = fetch(`${this.baseUrl}/accountuser/${id}`, {
             headers: this.defaultHeaders
