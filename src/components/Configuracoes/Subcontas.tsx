@@ -92,9 +92,14 @@ export const Subcontas = () => {
             if(result.data){
                 showToast("Sucesso", "success", "Operação realizada com sucesso!")
             }
+            else{
+                showToast("Erro", "error", result.errors.join(','))
+            }
         }
         catch(e) {
             console.log(e);
+            showToast("Erro", "error", "Erro inesperado")
+
         }
 
         setSendingToApi(s => s = false);
