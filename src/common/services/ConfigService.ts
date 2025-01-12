@@ -22,4 +22,14 @@ export class ConfigService {
 
         return response.then(r => r.json());
     }
+
+    public checkSubAccount(galaxId: number, approve: boolean) : Promise<ResponseDTO<boolean>>{
+        let response = fetch(`${this.baseUrl}/subaccounts/${galaxId}/status`, {
+            method: 'PATCH',
+            headers: this.defaultHeaders,
+            body: JSON.stringify( approve )
+        });
+
+        return response.then(r => r.json());
+    }
 }
